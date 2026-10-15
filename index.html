@@ -32,16 +32,16 @@
                 if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
             };
 
-            // 3. Anti Debugger Loop
+            // 3. Anti Debugger Loop (Optimized so low-RAM phones never lag)
             setInterval(function(){
                 var before = new Date().getTime();
                 debugger;
                 var after = new Date().getTime();
-                if(after - before > 100) {
+                if(after - before > 200) {
                     document.body.innerHTML = "<h1 style='color:#ff3366; text-align:center; margin-top:20%;'>SECURITY ALERT: App Blocked!</h1>";
                     window.location.replace("about:blank");
                 }
-            }, 100);
+            }, 2500);
             
             // 4. Disable Console
             const consoleMethods = ['log', 'warn', 'error', 'info', 'table', 'dir'];
@@ -54,7 +54,7 @@
     <link rel="preconnect" href="https://www.gstatic.com">
     <link rel="dns-prefetch" href="https://js-numbar-bot-fast-default-rtdb.firebaseio.com">
     
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -63,30 +63,33 @@
 
     <style>
         /* ==========================================================================
-           ULTIMATE FINTECH PREMIUM UI & SMOOTH RESPONSIVE DESIGN
+           ULTRA SMOOTH 60FPS COLORFUL UI (OPTIMIZED FOR ALL LOW-RAM PHONES)
            ========================================================================== */
         :root {
-            --brand-primary: #00E5FF;
-            --brand-secondary: #7000FF;
-            --brand-gradient: linear-gradient(135deg, #00E5FF 0%, #007BFF 100%);
-            --brand-gradient-alt: linear-gradient(135deg, #7000FF 0%, #00E5FF 100%);
+            --brand-primary: #00F0FF;
+            --brand-secondary: #8A2BE2;
+            --brand-pink: #FF007F;
+            --brand-gold: #FFB800;
+            --brand-gradient: linear-gradient(135deg, #00F0FF 0%, #0077FF 50%, #7000FF 100%);
+            --brand-gradient-alt: linear-gradient(135deg, #FF007F 0%, #7000FF 50%, #00F0FF 100%);
+            --brand-rainbow: linear-gradient(90deg, #00F0FF, #7000FF, #FF007F, #FFB800, #00FF88);
             
             --status-success: #00FF88;
             --status-warning: #FFD600;
             --status-danger: #FF2A5F;
             
-            --bg-absolute: #05070A; 
-            --bg-card: #0D131F;
-            --bg-card-hover: #131A2A;
-            --bg-input: #080C14;
+            --bg-absolute: #060913; 
+            --bg-card: #0E1526;
+            --bg-card-hover: #141E36;
+            --bg-input: #080D1A;
             
-            --glass-border: rgba(255, 255, 255, 0.05);
-            --neon-border: rgba(0, 229, 255, 0.3);
-            --shadow-float: 0 12px 30px -10px rgba(0, 0, 0, 0.8);
-            --shadow-glow: 0 0 20px rgba(0, 229, 255, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.09);
+            --neon-border: rgba(0, 240, 255, 0.4);
+            --shadow-float: 0 6px 18px rgba(0, 0, 0, 0.6);
+            --shadow-glow: 0 0 14px rgba(0, 240, 255, 0.25);
             
             --text-main: #FFFFFF;
-            --text-muted: #8A94A6;
+            --text-muted: #9BA8C0;
         }
 
         * { 
@@ -100,32 +103,96 @@
         
         body { 
             background-color: var(--bg-absolute); 
-            background-image: 
-                radial-gradient(circle at top right, rgba(112, 0, 255, 0.08), transparent 400px),
-                radial-gradient(circle at bottom left, rgba(0, 229, 255, 0.05), transparent 400px);
-            background-attachment: fixed;
+            background-image: linear-gradient(180deg, #090F22 0%, #060913 50%, #090D1C 100%);
             color: var(--text-main);
             min-height: 100vh; 
             padding: 12px;
-            padding-bottom: 120px; 
+            padding-bottom: 115px; 
             overflow-x: hidden;
         }
 
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
+        @keyframes digitalMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
         .pro-card {
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
+            background: linear-gradient(160deg, #111A30 0%, #0B1120 100%);
+            border: 1px solid rgba(0, 240, 255, 0.18);
             border-radius: 20px;
             box-shadow: var(--shadow-float);
-            padding: 20px;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            padding: 18px;
             position: relative;
             overflow: hidden;
         }
         .pro-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: var(--brand-rainbow);
+        }
+
+        /* ==========================================================================
+           TOP-UP NOTICE BOARD (ONLY BANNER & CROSS BUTTON)
+           ========================================================================== */
+        #topupBannerModalOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(4, 6, 14, 0.92);
+            z-index: 25000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 18px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .topup-banner-only-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .topup-banner-image-card {
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid var(--brand-primary);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.9);
+            background: #060A14;
+            line-height: 0;
+        }
+        .topup-banner-image-card img {
+            width: 100%;
+            height: auto;
+            max-height: 78vh;
+            object-fit: cover;
+            display: block;
+            border-radius: 18px;
+        }
+        .topup-banner-cross-btn {
+            position: absolute;
+            top: -14px;
+            right: -10px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF2A5F 0%, #FF007F 100%);
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+            font-size: 18px;
+            font-weight: 900;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+            z-index: 10;
+        }
+        .topup-banner-cross-btn:active {
+            transform: scale(0.92);
         }
 
         /* ==========================================================================
@@ -138,19 +205,20 @@
         
         .auth-wrapper {
             width: 100%; max-width: 420px; 
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.05);
-            border-radius: 28px; padding: 40px 30px; text-align: center;
+            background: linear-gradient(160deg, #121B32 0%, #0A0F1E 100%);
+            border: 1px solid rgba(0, 240, 255, 0.28);
+            box-shadow: 0 16px 36px rgba(0,0,0,0.85);
+            border-radius: 26px; padding: 36px 26px; text-align: center;
             position: relative;
+            overflow: hidden;
         }
         .auth-wrapper::after {
-            content: ''; position: absolute; top: -1px; left: 20%; right: 20%; height: 2px;
-            background: var(--brand-gradient); filter: blur(2px); border-radius: 50%;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--brand-rainbow);
         }
 
         .gradient-text {
-            background: var(--brand-gradient);
+            background: linear-gradient(90deg, #00F0FF 0%, #FF007F 50%, #FFB800 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 800; letter-spacing: -0.5px;
@@ -161,266 +229,287 @@
            ========================================================================== */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-absolute); z-index: 99999;
+            background: #060913; z-index: 99999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.6s ease;
+            transition: opacity 0.4s ease;
         }
 
         .cyber-loader {
-            position: relative; width: 100px; height: 100px; margin-bottom: 30px;
+            position: relative; width: 90px; height: 90px; margin-bottom: 25px;
         }
         .cyber-loader-inner {
             position: absolute; width: 100%; height: 100%;
             border-radius: 50%; border: 3px solid transparent;
             border-top-color: var(--brand-primary);
+            border-right-color: var(--brand-pink);
             border-bottom-color: var(--brand-secondary);
-            animation: spin 1.5s linear infinite;
+            border-left-color: var(--status-success);
+            animation: spin 1.2s linear infinite;
         }
         .cyber-loader-core {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 50px; height: 50px; background: var(--brand-gradient);
-            border-radius: 50%; box-shadow: var(--shadow-glow);
+            width: 46px; height: 46px; background: var(--brand-gradient-alt);
+            border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
-            font-size: 24px; color: #fff; animation: pulse 2s infinite alternate;
+            font-size: 22px; color: #fff;
         }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0% { transform: translate(-50%, -50%) scale(0.9); box-shadow: 0 0 10px rgba(0,229,255,0.4); } 100% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 30px rgba(0,229,255,0.8); } }
 
         /* ==========================================================================
            MODALS & OVERLAYS
            ========================================================================== */
         .modal-overlay, .video-modal-overlay {
             position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(5, 7, 10, 0.85); backdrop-filter: blur(5px);
+            background: rgba(5, 7, 14, 0.92);
             z-index: 15000; display: none; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.3s ease;
+            opacity: 0; transition: opacity 0.2s ease;
         }
         
         .notice-modal {
-            background: var(--bg-card); border: 1px solid var(--glass-border); 
-            box-shadow: 0 30px 70px rgba(0,0,0,0.9);
-            width: 90%; max-width: 420px; padding: 35px; border-radius: 28px; text-align: center;
-            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(160deg, #121B30 0%, #090D18 100%);
+            border: 1px solid rgba(0, 240, 255, 0.28); 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+            width: 90%; max-width: 420px; padding: 30px; border-radius: 24px; text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .notice-modal::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--brand-rainbow);
         }
 
         /* ==========================================================================
            BUTTONS & INPUTS
            ========================================================================== */
         .btn-pro { 
-            width: 100%; padding: 16px; 
-            background: var(--brand-gradient); 
-            color: #000; border: none; border-radius: 16px; 
-            font-size: 16px; font-weight: 700; cursor: pointer; 
-            transition: all 0.3s ease; letter-spacing: 0.5px;
-            box-shadow: 0 6px 15px rgba(0, 229, 255, 0.2); 
+            width: 100%; padding: 15px; 
+            background: linear-gradient(135deg, #00F0FF 0%, #0077FF 50%, #8A2BE2 100%); 
+            color: #FFFFFF; border: none; border-radius: 15px; 
+            font-size: 16px; font-weight: 800; cursor: pointer; 
+            transition: transform 0.15s ease, opacity 0.15s ease; letter-spacing: 0.5px;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3); 
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .btn-pro:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 229, 255, 0.4); }
-        .btn-pro:active { transform: translateY(1px); }
+        .btn-pro:active { transform: scale(0.98); }
         .btn-pro:disabled { background: var(--bg-input); color: var(--text-muted); box-shadow: none; }
 
         .btn-outline {
-            background: transparent; border: 1px solid var(--glass-border); color: var(--text-main);
-            padding: 12px 20px; border-radius: 14px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.3); color: var(--text-main);
+            padding: 11px 18px; border-radius: 13px; font-size: 14px; font-weight: 700; cursor: pointer;
+            transition: background 0.15s ease;
         }
-        .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); }
+        .btn-outline:active { background: rgba(0, 240, 255, 0.15); }
 
-        .input-wrapper { margin-bottom: 20px; text-align: left; width: 100%; }
-        .input-wrapper label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 13px; font-weight: 500; letter-spacing: 0.5px;}
+        .input-wrapper { margin-bottom: 18px; text-align: left; width: 100%; }
+        .input-wrapper label { display: block; margin-bottom: 8px; color: #B4C2D8; font-size: 13px; font-weight: 600; letter-spacing: 0.4px;}
         .input-wrapper input, .input-wrapper select { 
-            width: 100%; padding: 16px; 
-            background: var(--bg-input); 
-            border: 1px solid var(--glass-border); 
+            width: 100%; padding: 15px; 
+            background: #080C18; 
+            border: 1px solid rgba(0, 240, 255, 0.25); 
             border-radius: 14px; color: #fff; font-size: 15px; outline: none; 
-            transition: all 0.3s ease; 
+            transition: border-color 0.2s ease; 
         }
         .input-wrapper input:focus, .input-wrapper select:focus { 
             border-color: var(--brand-primary); 
-            box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1); 
         }
 
         /* ==========================================================================
            HEADER & SIDEBAR 
            ========================================================================== */
         .top-header {
-            background: var(--bg-card); border: 1px solid var(--glass-border);
-            border-radius: 20px; padding: 14px 20px; margin-bottom: 20px;
+            background: linear-gradient(135deg, #111A32 0%, #191132 100%);
+            border: 1px solid rgba(0, 240, 255, 0.28);
+            border-radius: 20px; padding: 13px 18px; margin-bottom: 18px;
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: var(--shadow-float); position: sticky; top: 10px; z-index: 100;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.65);
+            position: sticky; top: 8px; z-index: 100;
         }
 
         .menu-toggle {
-            background: var(--bg-input); border: 1px solid var(--glass-border);
-            width: 44px; height: 44px; border-radius: 12px; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; gap: 5px; cursor: pointer; transition: 0.3s;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(138, 43, 226, 0.25));
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            width: 44px; height: 44px; border-radius: 13px; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; gap: 5px; cursor: pointer;
         }
-        .menu-toggle span { display: block; width: 20px; height: 2px; background: #fff; border-radius: 2px; transition: 0.3s; }
-        .menu-toggle:hover { border-color: rgba(255,255,255,0.2); }
+        .menu-toggle span { display: block; width: 20px; height: 2.5px; background: linear-gradient(90deg, #00F0FF, #FF007F); border-radius: 2px; }
 
         .wallet-chip {
-            background: linear-gradient(90deg, rgba(0,229,255,0.05), transparent);
-            border: 1px solid var(--neon-border); border-radius: 14px; padding: 8px 16px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.16) 0%, rgba(0, 240, 255, 0.18) 100%);
+            border: 1px solid rgba(0, 255, 136, 0.45); border-radius: 15px; padding: 7px 16px;
             display: flex; flex-direction: column; align-items: flex-end; cursor: pointer;
-            transition: 0.3s;
         }
-        .wallet-chip:hover { background: rgba(0,229,255,0.1); transform: translateY(-2px); }
-        .wallet-title { font-size: 10px; color: var(--brand-primary); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
-        .wallet-amount { font-size: 18px; font-weight: 800; color: #fff; }
+        .wallet-title { font-size: 10px; color: var(--status-success); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
+        .wallet-amount { font-size: 18px; font-weight: 900; color: #fff; }
 
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 11000; display: none; opacity: 0; transition: 0.3s; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.72); z-index: 11000; display: none; opacity: 0; transition: opacity 0.25s ease; }
         .sidebar {
             position: fixed; top: 0; left: -100%; width: 300px; max-width: 85%; height: 100vh;
-            background: var(--bg-card); border-right: 1px solid var(--glass-border);
-            box-shadow: 20px 0 50px rgba(0,0,0,0.8); z-index: 12000; transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            padding: 30px 20px; display: flex; flex-direction: column; overflow-y: auto;
+            background: linear-gradient(180deg, #0E162B 0%, #070B16 100%);
+            border-right: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: 12px 0 35px rgba(0,0,0,0.85);
+            z-index: 12000; transition: left 0.3s ease;
+            padding: 28px 18px; display: flex; flex-direction: column; overflow-y: auto;
         }
         .sidebar.open { left: 0; }
         
-        .profile-hero { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--glass-border); }
+        .profile-hero { display: flex; align-items: center; gap: 15px; margin-bottom: 26px; padding-bottom: 18px; border-bottom: 1px solid var(--glass-border); }
         .profile-avatar {
-            width: 56px; height: 56px; border-radius: 16px; background: var(--brand-gradient);
-            display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; color: #000;
+            width: 54px; height: 54px; border-radius: 16px; background: var(--brand-gradient-alt);
+            display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; color: #fff;
         }
         .profile-info h3 { font-size: 18px; color: #fff; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
-        .badge-verified { background: rgba(0, 255, 136, 0.1); color: var(--status-success); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 700; border: 1px solid rgba(0,255,136,0.2);}
+        .badge-verified { background: rgba(0, 255, 136, 0.15); color: var(--status-success); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 800; border: 1px solid rgba(0,255,136,0.35);}
         
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .stat-box { background: var(--bg-input); border: 1px solid var(--glass-border); padding: 15px; border-radius: 14px; text-align: center; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+        .stat-box { background: var(--bg-input); border: 1px solid var(--glass-border); padding: 14px; border-radius: 14px; text-align: center; }
         .stat-box span { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;}
         .stat-box strong { font-size: 20px; color: #fff; font-weight: 800; }
 
         /* ==========================================================================
            MAIN CONTENT, CHARTS & LISTS
            ========================================================================== */
-        .banner-wrap { width: 100%; height: 160px; border-radius: 20px; overflow: hidden; margin-bottom: 20px; border: 1px solid var(--glass-border); position: relative; }
+        .banner-wrap {
+            width: 100%; height: 160px; border-radius: 20px; overflow: hidden; margin-bottom: 18px;
+            border: 2px solid rgba(0, 240, 255, 0.35); position: relative;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+            cursor: pointer;
+        }
         .banner-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
-        .chart-title { font-size: 15px; color: var(--text-main); margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 8px;}
-        .chart-title span { display: inline-block; width: 10px; height: 10px; background: var(--status-success); border-radius: 50%; box-shadow: 0 0 10px var(--status-success); }
+        .chart-title { font-size: 15px; color: var(--text-main); margin-bottom: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px;}
+        .chart-title span { display: inline-block; width: 10px; height: 10px; background: var(--status-success); border-radius: 50%; }
         
         /* Traffic Alert */
         .alert-card {
-            background: linear-gradient(to right, rgba(255, 42, 95, 0.1), transparent);
-            border: 1px solid rgba(255, 42, 95, 0.2); border-left: 4px solid var(--status-danger);
-            border-radius: 16px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px;
+            background: linear-gradient(135deg, rgba(255, 42, 95, 0.18) 0%, rgba(255, 184, 0, 0.12) 100%);
+            border: 1px solid rgba(255, 42, 95, 0.35); border-left: 5px solid var(--status-danger);
+            border-radius: 16px; padding: 15px; margin-bottom: 18px; display: flex; align-items: center; gap: 14px;
         }
-        .filter-pill { background: var(--bg-input); border: 1px solid var(--glass-border); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .filter-pill.active { background: var(--status-danger); color: #000; border-color: var(--status-danger); }
+        .filter-pill { background: var(--bg-input); border: 1px solid var(--glass-border); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .filter-pill.active { background: linear-gradient(135deg, #FF2A5F, #FF007F); color: #fff; border-color: transparent; }
 
         /* NEW PREMIUM SELECT BUTTON DESIGN */
         .btn-select-premium { 
-            background: linear-gradient(135deg, rgba(0, 229, 255, 0.1), rgba(0, 123, 255, 0.1));
-            border: 1px solid rgba(0, 229, 255, 0.4); 
-            color: var(--brand-primary); 
-            padding: 8px 18px; 
-            border-radius: 20px; 
+            background: linear-gradient(135deg, #00F0FF 0%, #7000FF 100%);
+            border: 1px solid rgba(255, 255, 255, 0.25); 
+            color: #FFFFFF; 
+            padding: 8px 16px; 
+            border-radius: 18px; 
             font-size: 12px; 
-            font-weight: 700; 
+            font-weight: 800; 
             cursor: pointer; 
-            transition: all 0.3s ease; 
             flex-shrink: 0; 
             text-transform: uppercase; 
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.1);
+            letter-spacing: 0.8px;
         }
-        .btn-select-premium:hover { 
-            background: var(--brand-gradient); 
-            color: #000; 
-            box-shadow: 0 6px 20px rgba(0, 229, 255, 0.4); 
-            transform: translateY(-2px);
+        .btn-select-premium:active { 
+            background: linear-gradient(135deg, #FF007F 0%, #FFB800 100%); 
+            transform: scale(0.96);
         }
 
         /* Dynamic Range Lists */
         .range-item {
-            background: var(--bg-input); border: 1px solid var(--glass-border); border-radius: 16px;
-            padding: 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px;
-            transition: 0.3s; position: relative; overflow: hidden;
+            background: #0A1020;
+            border: 1px solid rgba(0, 240, 255, 0.18); border-radius: 16px;
+            padding: 15px; margin-bottom: 11px; display: flex; flex-direction: column; gap: 10px;
+            position: relative; overflow: hidden;
         }
-        .range-item:hover { transform: translateX(5px); border-color: rgba(255,255,255,0.1); background: var(--bg-card-hover); }
-        .range-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--brand-primary); border-radius: 4px 0 0 4px;}
+        .range-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, #00F0FF, #7000FF, #FF007F); border-radius: 4px 0 0 4px;}
         
         .range-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .range-title { font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
-        .range-meta { font-size: 13px; color: var(--text-muted); margin-top: 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .range-meta span { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 8px; color: #fff; border: 1px solid rgba(255,255,255,0.1); font-size: 12px;}
-        .sms-preview { background: rgba(0,0,0,0.4); border-radius: 10px; padding: 12px; font-size: 13px; color: var(--text-muted); display: flex; gap: 10px; border: 1px solid rgba(255,255,255,0.02); }
+        .range-title { font-size: 15px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .range-meta { font-size: 13px; color: var(--text-muted); margin-top: 5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .range-meta span { background: rgba(0, 240, 255, 0.1); padding: 3px 9px; border-radius: 7px; color: #00F0FF; border: 1px solid rgba(0, 240, 255, 0.25); font-size: 12px; font-weight: 700;}
+        .sms-preview { background: #060A15; border-radius: 10px; padding: 10px 12px; font-size: 12px; color: #B8C6DC; display: flex; gap: 8px; border: 1px solid rgba(255,255,255,0.05); }
 
         /* Result Vault (OTP Box) */
         .vault-box {
-            background: var(--bg-input); border: 1px solid var(--neon-border);
-            border-radius: 20px; padding: 20px; margin-top: 20px; display: none;
-            box-shadow: inset 0 4px 20px rgba(0,0,0,0.5);
+            background: #080E1E;
+            border: 1.5px solid var(--neon-border);
+            border-radius: 20px; padding: 18px; margin-top: 18px; display: none;
         }
-        .vault-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; margin-bottom: 15px; }
-        .status-badge { background: rgba(255,255,255,0.1); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+        .vault-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 14px; margin-bottom: 14px; }
+        .status-badge { background: rgba(0, 240, 255, 0.15); color: #00F0FF; border: 1px solid rgba(0, 240, 255, 0.3); padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; text-transform: uppercase; }
         
         .otp-display-area {
-            background: rgba(0, 255, 136, 0.05); border: 1px dashed rgba(0, 255, 136, 0.3);
-            border-radius: 16px; padding: 25px; text-align: center; margin-bottom: 20px;
+            background: rgba(0, 255, 136, 0.08);
+            border: 1.5px dashed rgba(0, 255, 136, 0.45);
+            border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 16px;
         }
         .otp-code {
-            display: inline-block; background: rgba(0, 255, 136, 0.1); color: var(--status-success);
-            font-size: 32px; font-weight: 900; letter-spacing: 8px; font-family: monospace;
-            padding: 10px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s;
-            text-shadow: 0 0 15px rgba(0,255,136,0.4); border: 1px solid rgba(0,255,136,0.2);
-            margin: 5px;
+            display: inline-block; background: rgba(0, 255, 136, 0.16);
+            color: var(--status-success);
+            font-size: 30px; font-weight: 900; letter-spacing: 6px; font-family: monospace;
+            padding: 10px 18px; border-radius: 12px; cursor: pointer;
+            border: 1px solid rgba(0,255,136,0.35);
+            margin: 4px;
         }
-        .otp-code:hover { background: var(--status-success); color: #000; transform: scale(1.05); text-shadow: none; }
+        .otp-code:active { background: var(--status-success); color: #000; }
 
         /* View Control */
-        .view-section { display: none; animation: fadeSlide 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .view-section { display: none; }
         .view-section.active { display: block; }
-        @keyframes fadeSlide { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* ==========================================================================
            FLOATING DOCK (Tabs)
            ========================================================================== */
         .floating-dock { 
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-            width: 90%; max-width: 400px;
-            background: rgba(13, 19, 31, 0.85); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 24px;
+            position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%) translateY(100px);
+            width: 92%; max-width: 410px;
+            background: #0E162B;
+            border: 1px solid rgba(0, 240, 255, 0.32); border-radius: 22px;
             display: flex; justify-content: space-around; align-items: center; 
-            padding: 6px 8px; z-index: 10000; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
-            transition: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); opacity: 0;
+            padding: 6px 8px; z-index: 10000; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.85);
+            transition: transform 0.25s ease, opacity 0.25s ease; opacity: 0;
         }
         .floating-dock.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
         .dock-item {
             background: transparent; border: none; color: var(--text-muted);
             flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
-            padding: 10px 0; border-radius: 16px; cursor: pointer; transition: 0.3s; position: relative;
+            padding: 9px 0; border-radius: 14px; cursor: pointer; position: relative;
         }
-        .dock-item:hover { color: #fff; background: rgba(255,255,255,0.03); }
-        .dock-item svg { width: 22px; height: 22px; fill: currentColor; transition: 0.3s; }
-        .dock-item span { font-size: 10px; font-weight: 600; }
+        .dock-item svg { width: 21px; height: 21px; fill: currentColor; }
+        .dock-item span { font-size: 10px; font-weight: 700; }
         
-        .dock-item.active { color: var(--brand-primary); }
-        .dock-item.active svg { transform: translateY(-3px); filter: drop-shadow(0 2px 5px rgba(0,229,255,0.5)); }
+        .dock-item.active { color: var(--brand-primary); background: rgba(0, 240, 255, 0.12); }
         .dock-item::after {
             content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%) scale(0);
-            width: 4px; height: 4px; background: var(--brand-primary); border-radius: 50%; transition: 0.3s;
+            width: 14px; height: 3px; background: var(--brand-rainbow); border-radius: 4px;
         }
-        .dock-item.active::after { transform: translateX(-50%) scale(1); box-shadow: 0 0 8px var(--brand-primary); }
+        .dock-item.active::after { transform: translateX(-50%) scale(1); }
 
         /* Notification */
         .toast-noti {
-            position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px;
-            background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 16px;
-            padding: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); z-index: 20000;
-            display: flex; flex-direction: column; gap: 8px; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); opacity: 0;
+            position: fixed; top: -140px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px;
+            background: #101930;
+            border: 1.5px solid rgba(0, 240, 255, 0.45); border-radius: 18px;
+            padding: 15px; box-shadow: 0 12px 30px rgba(0,0,0,0.85); z-index: 20000;
+            display: flex; flex-direction: column; gap: 8px; transition: top 0.25s ease, opacity 0.25s ease; opacity: 0;
         }
-        .toast-noti.show { top: 20px; opacity: 1; }
+        .toast-noti.show { top: 16px; opacity: 1; }
 
         /* Specific overrides */
         #leaderboardContent div { background: var(--bg-input) !important; border-left-color: var(--status-warning) !important; border-radius: 12px !important; }
-        .history-card { background: var(--bg-input); border-radius: 16px; padding: 16px; margin-bottom: 15px; border-left: 3px solid var(--text-muted); transition: 0.3s;}
-        .history-card:hover { border-color: rgba(255,255,255,0.1); transform: translateX(4px); }
+        .history-card { background: var(--bg-input); border-radius: 16px; padding: 16px; margin-bottom: 15px; border-left: 3px solid var(--text-muted); }
         .history-card.success { border-left-color: var(--status-success); }
     </style>
 </head>
 <body>
+
+    <!-- ==========================================
+         TOP-UP / POPUP BANNER NOTICE BOARD (ONLY BANNER + CROSS BUTTON)
+         ========================================== -->
+    <div id="topupBannerModalOverlay">
+        <div class="topup-banner-only-wrapper">
+            <button type="button" class="topup-banner-cross-btn" onclick="closeTopupBannerModal()" aria-label="Close">✕</button>
+            <div class="topup-banner-image-card" onclick="handleTopupBannerClick()">
+                <img id="topupBannerModalImg" src="" alt="Banner">
+            </div>
+        </div>
+    </div>
 
     <!-- ==========================================
          MODALS 
@@ -441,7 +530,7 @@
 
     <!-- API MODAL UPDATED WITH TELEGRAM BOT GUIDE & API URL -->
     <div class="modal-overlay" id="apiModalOverlay" style="z-index: 10003;">
-        <div class="notice-modal" style="border-color: var(--brand-secondary); box-shadow: 0 0 40px rgba(112, 0, 255, 0.15); max-height: 90vh; overflow-y: auto;">
+        <div class="notice-modal" style="border-color: var(--brand-secondary); max-height: 90vh; overflow-y: auto;">
             <div style="font-size: 40px; margin-bottom: 10px;">🔌</div>
             <h3 style="color:var(--text-main); margin-bottom:10px; font-size:20px; font-weight: 800;">Your API Access</h3>
             <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">এই API URL এবং API Key ব্যবহার করে আপনি টেলিগ্রাম বট বা থার্ড-পার্টি অ্যাপে (যেমন Live API Number Panel) লগইন করতে পারবেন।</p>
@@ -457,8 +546,8 @@
             <div style="background: rgba(0, 229, 255, 0.05); border: 1px dashed rgba(0, 229, 255, 0.4); border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: left;">
                 <h4 style="color: var(--brand-primary); font-size: 15px; margin-bottom: 10px; font-weight: 800; display: flex; align-items: center; gap: 8px;">🤖 Telegram Bot / Live API App Setup</h4>
                 <p style="font-size: 12px; color: #fff; margin-bottom: 6px;">১. অ্যাপের Panel URL অপশনে উপরের URL টি বসান।</p>
-                <p style="font-size: 12px; color: #fff; margin-bottom: 10px;">২. এরপর আপনার API Key টি কপি করে বসিয়ে Connect করুন।</p>
-                <p style="font-size: 12px; color: var(--status-warning); font-weight: 800; margin-top: 12px; margin-bottom: 12px; line-height: 1.5; padding: 8px; background: rgba(255, 214, 0, 0.1); border-radius: 8px; border: 1px solid rgba(255, 214, 0, 0.2);">⚠️ যারা API নিবেন তাদের OTP রেট একটু বেশি দেওয়া হবে, রেট কমাতে বা যেকোনো দরকারে অ্যাডমিনের সাথে যোগাযোগ করুন!</p>
+                <p style="font-size: 12px; color: #fff; margin-bottom: 10px;">২. এরপর আপনার API Key টি কপি করে বসিয়ে Connect করুন।</p>
+                <p style="font-size: 12px; color: var(--status-warning); font-weight: 800; margin-top: 12px; margin-bottom: 12px; line-height: 1.5; padding: 8px; background: rgba(255, 214, 0, 0.1); border-radius: 8px; border: 1px solid rgba(255, 214, 0, 0.2);">⚠️ যারা API নিবেন তাদের OTP রেট একটু বেশি দেওয়া হবে, রেট কমাতে বা যেকোনো দরকারে অ্যাডমিনের সাথে যোগাযোগ করুন!</p>
             </div>
             
             <button class="btn-outline" style="width:100%;" onclick="closeApiModal()">Close</button>
@@ -474,7 +563,7 @@
     </div>
 
     <div class="modal-overlay" id="updateVideoModalOverlay" style="z-index: 10002;">
-        <div class="notice-modal" style="border-color: var(--brand-primary); box-shadow: 0 0 40px rgba(0,229,255,0.1);">
+        <div class="notice-modal" style="border-color: var(--brand-primary);">
             <div style="font-size: 40px; margin-bottom: 10px;">🚀</div>
             <h3 style="color:var(--brand-primary); margin-bottom:10px; font-size:20px; font-weight: 800;">নতুন আপডেট!</h3>
             <p id="updateVideoTextDisplay" style="font-size:14px; color:var(--text-muted); margin-bottom:25px;">নতুন আপডেট ভিডিও দেখে কাজ করুন।</p>
@@ -483,7 +572,7 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="videoGalleryModal" style="background: rgba(5,7,10,0.95); align-items: flex-start; padding-top: 30px; overflow-y:auto;">
+    <div class="modal-overlay" id="videoGalleryModal" style="background: rgba(5,7,10,0.96); align-items: flex-start; padding-top: 30px; overflow-y:auto;">
         <div style="width: 100%; max-width: 800px; padding: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
                 <div style="font-size: 20px; font-weight: 800; color: #fff;">🎥 Video Tutorials</div>
@@ -499,7 +588,7 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="subGalleryModal" style="z-index: 10006; background: rgba(5,7,10,0.95); align-items: flex-start; padding-top: 30px; overflow-y:auto;">
+    <div class="modal-overlay" id="subGalleryModal" style="z-index: 10006; background: rgba(5,7,10,0.96); align-items: flex-start; padding-top: 30px; overflow-y:auto;">
         <div style="width: 100%; max-width: 800px; padding: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
                 <div id="subGalleryTitle" style="font-size: 20px; font-weight: 800; color: #fff;">📁 Category Videos</div>
@@ -512,8 +601,8 @@
     <!-- ==========================================
          UPDATED VIDEO MODAL PLAYER (Premium Design & Shorts Support)
          ========================================== -->
-    <div class="video-modal-overlay" id="inAppVideoModal" style="background: rgba(2, 4, 8, 0.9);">
-        <div style="width: 90%; max-width: 480px; background: #0B111A; border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.9); display: flex; flex-direction: column;">
+    <div class="video-modal-overlay" id="inAppVideoModal" style="background: rgba(2, 4, 8, 0.94);">
+        <div style="width: 90%; max-width: 480px; background: #0B111A; border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.9); display: flex; flex-direction: column;">
             <h4 id="videoModalTitle" style="color: #ffffff; font-size: 16px; margin-bottom: 16px; font-weight: 700; text-align: left; line-height: 1.4;">কি ভাবে নাম্বার প্যানেল ব্যবহার করবেন</h4>
             
             <!-- Video will take exact dynamic size inside this container -->
@@ -521,7 +610,7 @@
                 <!-- iframe will be dynamically injected here -->
             </div>
             
-            <button style="width: 100%; padding: 14px; border-radius: 12px; font-size: 14px; background: #131A2A; border: 1px solid rgba(255,255,255,0.05); color: #fff; font-weight: 600; cursor: pointer; transition: 0.3s;" onclick="closeInAppVideo()" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='#131A2A'">Close Player</button>
+            <button style="width: 100%; padding: 14px; border-radius: 12px; font-size: 14px; background: #131A2A; border: 1px solid rgba(255,255,255,0.08); color: #fff; font-weight: 600; cursor: pointer;" onclick="closeInAppVideo()">Close Player</button>
         </div>
     </div>
 
@@ -649,15 +738,15 @@
                 </div>
             </div>
 
-            <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; margin-bottom: 15px; transition: 0.3s;" onclick="shareMyApp()" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+            <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; margin-bottom: 15px;" onclick="shareMyApp()">
                 <span style="font-size: 14px; font-weight: 700;">🔗 Share App With Friends</span>
             </div>
 
-            <div style="background: rgba(112, 0, 255, 0.1); border: 1px solid rgba(112, 0, 255, 0.3); border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; margin-bottom: 20px; transition: 0.3s;" onclick="requestAPIAccess()" onmouseover="this.style.background='rgba(112, 0, 255, 0.2)'" onmouseout="this.style.background='rgba(112, 0, 255, 0.1)'">
+            <div style="background: rgba(112, 0, 255, 0.12); border: 1px solid rgba(112, 0, 255, 0.35); border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; margin-bottom: 20px;" onclick="requestAPIAccess()">
                 <span style="font-size: 14px; font-weight: 700; color: #fff;">🔌 Get API Access</span>
             </div>
 
-            <button class="btn-pro" style="background: rgba(255, 42, 95, 0.1); color: var(--status-danger); border: 1px solid rgba(255, 42, 95, 0.3); box-shadow: none;" onclick="clearUserSession()">LOG OUT</button>
+            <button class="btn-pro" style="background: rgba(255, 42, 95, 0.12); color: var(--status-danger); border: 1px solid rgba(255, 42, 95, 0.35); box-shadow: none;" onclick="clearUserSession()">LOG OUT</button>
         </div>
 
         <!-- DASHBOARD (HOME TABS) -->
@@ -681,34 +770,34 @@
             <!-- ==========================================
                  NEW PREMIUM SETUP VIDEO NOTICE CARD (Appears in Home)
                  ========================================== -->
-            <div class="pro-card" id="setupVideoNoticeCard" style="margin-bottom: 20px; background: #0D131F; border: 1px solid rgba(0, 229, 255, 0.15); cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.6); display: none; transition: 0.3s;" onclick="playSetupVideo()" onmouseover="this.style.borderColor='rgba(0, 229, 255, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.borderColor='rgba(0, 229, 255, 0.15)'; this.style.transform='translateY(0)';">
-                <div style="display:flex; align-items:center; gap: 15px;">
-                    <div style="width: 42px; height: 42px; background: rgba(0, 229, 255, 0.08); border-radius: 12px; display: flex; justify-content: center; align-items: center; color: var(--brand-primary); font-size: 18px; border: 1px solid rgba(0, 229, 255, 0.2);">
+            <div class="pro-card" id="setupVideoNoticeCard" style="margin-bottom: 18px; background: linear-gradient(135deg, #0D1426, #181030); border: 1px solid rgba(0, 229, 255, 0.28); cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 15px 18px; display: none;" onclick="playSetupVideo()">
+                <div style="display:flex; align-items:center; gap: 14px;">
+                    <div style="width: 42px; height: 42px; background: linear-gradient(135deg, #00F0FF, #7000FF); border-radius: 12px; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 18px;">
                         ▶
                     </div>
                     <div>
-                        <h4 style="color: #fff; font-size: 15px; margin-bottom: 4px; font-weight: 700;">কি ভাবে নাম্বার প্যানেল ব্যবহার করবেন</h4>
-                        <span style="font-size: 12px; color: var(--text-muted); font-weight: 500;">ভিডিওটি দেখতে এখানে ক্লিক করুন</span>
+                        <h4 style="color: #fff; font-size: 15px; margin-bottom: 3px; font-weight: 700;">কি ভাবে নাম্বার প্যানেল ব্যবহার করবেন</h4>
+                        <span style="font-size: 12px; color: var(--brand-primary); font-weight: 500;">ভিডিওটি দেখতে এখানে ক্লিক করুন</span>
                     </div>
                 </div>
             </div>
 
-            <button class="btn-pro" onclick="openVideoGallery()" style="background: var(--bg-card); border: 1px solid var(--glass-border); color: #fff; margin-bottom: 20px; box-shadow: var(--shadow-float);">
+            <button class="btn-pro" onclick="openVideoGallery()" style="background: linear-gradient(135deg, #FF007F 0%, #7000FF 50%, #00B4DB 100%); border: 1px solid rgba(255,255,255,0.2); color: #fff; margin-bottom: 18px;">
                 <span style="font-size: 20px;">🚀</span> Watch New Method Videos
             </button>
 
             <!-- UPDATED NEW BEAUTIFUL DONUT CHART FOR TOP SUCCESS -->
-            <div class="pro-card" style="margin-bottom: 20px; padding: 25px 20px;">
-                <div class="chart-title" style="margin-bottom: 20px; font-size: 16px;"><span style="background: var(--status-success); box-shadow: 0 0 10px var(--status-success);"></span> Top Success Rate</div>
-                <div style="display: flex; align-items: center; justify-content: center; gap: 25px; flex-wrap: wrap;">
+            <div class="pro-card" style="margin-bottom: 18px; padding: 22px 18px;">
+                <div class="chart-title" style="margin-bottom: 18px; font-size: 16px;"><span style="background: var(--status-success);"></span> Top Success Rate</div>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 22px; flex-wrap: wrap;">
                     
-                    <div style="position: relative; width: 110px; height: 110px; border-radius: 50%; box-shadow: 0 0 25px rgba(0,0,0,0.8), inset 0 0 10px rgba(0,0,0,0.5);" id="donutChart">
-                        <div style="position: absolute; top: 18px; left: 18px; right: 18px; bottom: 18px; background: var(--bg-card); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff; text-align: center; box-shadow: inset 0 4px 15px rgba(0,0,0,0.8); flex-direction: column;">
-                            <span style="color:var(--status-success); font-size: 16px;">🔥</span> LIVE
+                    <div style="position: relative; width: 106px; height: 106px; border-radius: 50%;" id="donutChart">
+                        <div style="position: absolute; top: 17px; left: 17px; right: 17px; bottom: 17px; background: #0E1526; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff; text-align: center; flex-direction: column;">
+                            <span style="color:var(--status-success); font-size: 15px;">🔥</span> LIVE
                         </div>
                     </div>
 
-                    <div id="donutLegend" style="flex: 1; min-width: 150px; display: flex; flex-direction: column; gap: 8px;">
+                    <div id="donutLegend" style="flex: 1; min-width: 150px; display: flex; flex-direction: column; gap: 7px;">
                         <div style="color:var(--text-muted); font-size:12px; text-align:center;">Calculating active traffic...</div>
                     </div>
 
@@ -716,7 +805,7 @@
             </div>
             
             <div id="trafficAlertContainer" class="alert-card" style="display: none;">
-                <img id="trafficAvatar" src="https://cdn3d.iconscout.com/3d/premium/thumb/boy-avatar-6299533-5187871.png" alt="Avatar" style="width: 45px; height: 45px;">
+                <img id="trafficAvatar" src="https://cdn3d.iconscout.com/3d/premium/thumb/boy-avatar-6299533-5187871.png" alt="Avatar" style="width: 44px; height: 44px;">
                 <div>
                     <h4 id="trafficText" style="font-size:14px; margin-bottom:8px; font-weight:700;">Traffic High 🔥</h4>
                     <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="traffic-filters">
@@ -729,10 +818,10 @@
             </div>
             
             <!-- Live Ranges Board -->
-            <div class="pro-card" style="margin-bottom:20px; padding: 20px 15px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px;">
+            <div class="pro-card" style="margin-bottom:18px; padding: 18px 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid var(--glass-border); padding-bottom: 11px;">
                     <div id="syncIndicator" style="font-size:14px; font-weight:700; display: flex; align-items: center; gap: 8px;">
-                        <span style="width:8px; height:8px; background:var(--status-success); border-radius:50%; box-shadow:0 0 10px var(--status-success);"></span> Active Range Updated
+                        <span style="width:8px; height:8px; background:var(--status-success); border-radius:50%;"></span> Active Range Updated
                     </div>
                     
                     <div style="background: var(--bg-input); border: 1px solid var(--glass-border); border-radius: 8px; padding: 5px 10px; display: flex; align-items: center; gap: 8px; position: relative; overflow: hidden;">
@@ -742,12 +831,12 @@
                     </div>
                 </div>
 
-                <div id="liveRangeBox" style="max-height: 280px; overflow-y: auto; padding-right: 5px;"></div>
+                <div id="liveRangeBox" style="max-height: 280px; overflow-y: auto; padding-right: 4px;"></div>
             </div>
 
             <!-- Hot Traffic Box -->
-            <div class="pro-card" id="trafficRangeCardContainer" style="display: none; margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px;">
+            <div class="pro-card" id="trafficRangeCardContainer" style="display: none; margin-bottom: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid var(--glass-border); padding-bottom: 11px;">
                     <div style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;">🔥 Traffic High Range</div>
                     <span style="font-size: 10px; color: #000; font-weight: 800; background: var(--status-warning); padding: 4px 8px; border-radius: 6px;">HOT</span>
                 </div>
@@ -777,24 +866,24 @@
 
                     <!-- Ultimate OTP Display -->
                     <div id="otpContainer" style="display:none;">
-                        <div style="font-size:11px; color:var(--text-muted); margin-bottom: 15px; background: rgba(0,0,0,0.5); padding: 12px; border-radius: 12px; border: 1px solid var(--glass-border); text-align: left;">
+                        <div style="font-size:11px; color:var(--text-muted); margin-bottom: 14px; background: rgba(0,0,0,0.5); padding: 12px; border-radius: 12px; border: 1px solid var(--glass-border); text-align: left;">
                             <span style="color:var(--status-success); display:block; margin-bottom:4px; font-size:10px; text-transform:uppercase; font-weight:700;">Full Message</span>
                             <span id="lblSms" style="color: #fff; font-family: monospace; line-height: 1.4;"></span>
                         </div>
                         <div class="otp-display-area" id="lblOtp">- - - -</div>
-                        <div style="font-size: 10px; color: var(--text-muted); margin-top: 10px; text-transform:uppercase;">👆 Tap code to copy</div>
+                        <div style="font-size: 10px; color: var(--text-muted); margin-top: 8px; text-transform:uppercase;">👆 Tap code to copy</div>
                     </div>
 
                     <div id="numberDisplayRow">
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--glass-border); flex-wrap: wrap; gap:10px;" id="lblNumberContainer">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--glass-border); flex-wrap: wrap; gap:10px;" id="lblNumberContainer">
                             <span style="font-size: 14px; font-weight: 600; color: var(--text-muted);">Number: <strong id="lblNumber" style="color:var(--brand-primary); font-size: 18px; letter-spacing: 1px; margin-left:8px;">-</strong></span>
                             <button class="btn-outline" style="padding: 6px 15px; font-size: 12px;" onclick="copyText('lblNumber')">Copy</button>
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 15px; flex-wrap: wrap; gap:10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; flex-wrap: wrap; gap:10px;">
                             <span style="font-size: 13px; display: none;">Status: <span id="lblStatus">Waiting...</span></span> 
                             <div style="display:flex; gap:10px; width:100%; justify-content:flex-end;">
-                                <button class="btn-outline" style="background: rgba(255, 42, 95, 0.1); border-color: rgba(255, 42, 95, 0.3); color: var(--status-danger);" onclick="resetTask()">Cancel</button>
-                                <button class="btn-outline" style="background: rgba(255, 255, 255, 0.05);" onclick="changeNumberAction()">Change Number</button>
+                                <button class="btn-outline" style="background: rgba(255, 42, 95, 0.12); border-color: rgba(255, 42, 95, 0.35); color: var(--status-danger);" onclick="resetTask()">Cancel</button>
+                                <button class="btn-outline" style="background: rgba(255, 255, 255, 0.06);" onclick="changeNumberAction()">Change Number</button>
                             </div>
                         </div>
                     </div>
@@ -805,11 +894,11 @@
         <!-- OTHER TABS -->
         <div id="history-panel" class="view-section">
             <div class="pro-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom: 1px solid var(--glass-border); padding-bottom: 14px;">
                     <h3 style="font-size: 18px; font-weight: 800;">Activity History</h3>
                     <button class="btn-outline" style="padding: 8px 15px; font-size: 12px; color: var(--brand-primary); border-color: var(--brand-primary);" onclick="openLeaderboard()">🏆 Leaderboard</button>
                 </div>
-                <div id="historyContainer" style="max-height: 600px; overflow-y: auto; padding-right: 5px;">
+                <div id="historyContainer" style="max-height: 600px; overflow-y: auto; padding-right: 4px;">
                     <p style="text-align:center; color:var(--text-muted); font-size:14px; padding:40px;">No history available yet.</p>
                 </div>
             </div>
@@ -817,8 +906,8 @@
 
         <div id="global-otp-panel" class="view-section">
             <div class="pro-card">
-                <h3 style="margin-bottom:20px; font-weight: 800; font-size: 18px; text-align:center; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">🟢 Global Live OTPs</h3>
-                <div id="globalOtpContainer" style="max-height: 600px; overflow-y: auto; padding-right: 5px;" data-last-ref="">
+                <h3 style="margin-bottom:18px; font-weight: 800; font-size: 18px; text-align:center; border-bottom: 1px solid var(--glass-border); padding-bottom: 14px;">🟢 Global Live OTPs</h3>
+                <div id="globalOtpContainer" style="max-height: 600px; overflow-y: auto; padding-right: 4px;" data-last-ref="">
                     <p style="text-align:center; color:var(--text-muted); font-size:14px; padding:40px;">Loading Live OTPs...</p>
                 </div>
             </div>
@@ -826,7 +915,7 @@
 
         <div id="withdraw-panel" class="view-section">
             <div class="pro-card">
-                <h3 style="margin-bottom:20px; font-weight: 800; font-size: 18px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">Cashout Earnings</h3>
+                <h3 style="margin-bottom:18px; font-weight: 800; font-size: 18px; border-bottom: 1px solid var(--glass-border); padding-bottom: 14px;">Cashout Earnings</h3>
                 <div class="input-wrapper">
                     <label>Select Payment Method</label>
                     <select id="withdrawMethod" onchange="savePaymentState()">
@@ -841,7 +930,7 @@
                     <input type="text" id="withdrawNum" placeholder="Enter Wallet Number or Address" oninput="savePaymentState()">
                 </div>
                 
-                <div style="display: flex; gap: 10px; align-items: center; margin-top: -10px; margin-bottom: 20px;">
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: -8px; margin-bottom: 18px;">
                     <input type="checkbox" id="saveWalletCheck" style="width:16px; height:16px; accent-color: var(--brand-primary); cursor:pointer;" onchange="savePaymentState()">
                     <label for="saveWalletCheck" style="margin:0; font-size: 13px; color:var(--text-muted); cursor:pointer;">Save Payment Information</label>
                 </div>
@@ -856,17 +945,17 @@
 
         <div id="tfa-panel" class="view-section">
             <div class="pro-card" style="margin: 10px auto; max-width: 400px; text-align: center;">
-                <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 25px;">2FA Generator</h3>
+                <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 22px;">2FA Generator</h3>
                 
-                <input type="text" id="tfa-secret" placeholder="Paste 2FA Secret Key" autocomplete="off" style="width:100%; padding:16px; margin-bottom:20px; background:var(--bg-input); border:1px solid var(--glass-border); color:#fff; border-radius:14px; outline:none; text-align:center; font-family:monospace; letter-spacing:1px;">
+                <input type="text" id="tfa-secret" placeholder="Paste 2FA Secret Key" autocomplete="off" style="width:100%; padding:15px; margin-bottom:18px; background:var(--bg-input); border:1px solid var(--glass-border); color:#fff; border-radius:14px; outline:none; text-align:center; font-family:monospace; letter-spacing:1px;">
                 
-                <div style="display: flex; gap: 10px; margin-bottom: 25px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 22px;">
                     <button class="btn-pro" style="flex:1; padding:12px; font-size: 14px;" onclick="generate2FA()">Generate</button>
-                    <button class="btn-outline" style="flex:1; padding:12px; background: rgba(255, 42, 95, 0.1); border-color: rgba(255, 42, 95, 0.3); color: var(--status-danger);" onclick="reset2FA()">Reset</button>
+                    <button class="btn-outline" style="flex:1; padding:12px; background: rgba(255, 42, 95, 0.12); border-color: rgba(255, 42, 95, 0.35); color: var(--status-danger);" onclick="reset2FA()">Reset</button>
                 </div>
 
-                <div style="padding: 25px; background: rgba(0,0,0,0.5); border-radius: 16px; border: 1px dashed rgba(255,255,255,0.2); cursor: pointer; transition: 0.3s;" onclick="copyToClipboard2FA()" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.2)'">
-                    <p id="tfa-code" style="font-size: 38px; color: var(--brand-primary); letter-spacing: 6px; font-weight: 800; margin: 0; font-family: monospace; text-shadow: 0 0 15px rgba(0,229,255,0.3);">------</p>
+                <div style="padding: 22px; background: rgba(0,0,0,0.5); border-radius: 16px; border: 1px dashed rgba(255,255,255,0.2); cursor: pointer;" onclick="copyToClipboard2FA()">
+                    <p id="tfa-code" style="font-size: 36px; color: var(--brand-primary); letter-spacing: 6px; font-weight: 800; margin: 0; font-family: monospace;">------</p>
                     <div id="tfa-timer" style="font-size:12px; color:var(--text-muted); margin-top:10px;">Ready to sync</div>
                 </div>
             </div>
@@ -874,21 +963,21 @@
         <div id="tfa-toast" class="toast-noti" style="background: var(--brand-primary); color: #000; font-weight: 700; text-align: center; border-radius: 30px;">Code Copied!</div>
 
         <!-- NEW: PRIVATE LIVE CHAT WIDGET & PANEL FOR EACH USER -->
-        <div id="liveChatWidget" onclick="toggleLiveChat()" style="position: fixed; bottom: 85px; right: 20px; width: 50px; height: 50px; background: var(--brand-gradient); border-radius: 50%; display: none; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 10px 20px rgba(0, 229, 255, 0.4); z-index: 10000; transition: 0.3s; border: 2px solid #000;">
+        <div id="liveChatWidget" onclick="toggleLiveChat()" style="position: fixed; bottom: 82px; right: 18px; width: 48px; height: 48px; background: var(--brand-gradient); border-radius: 50%; display: none; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.7); z-index: 10000; border: 2px solid #000;">
             <span style="font-size: 22px;">💬</span>
         </div>
 
-        <div id="liveChatPanel" style="position: fixed; bottom: 145px; right: 20px; width: 320px; max-width: 85vw; height: 420px; background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 20px; display: none; flex-direction: column; z-index: 10000; box-shadow: var(--shadow-float); overflow: hidden; opacity: 0; transition: opacity 0.3s;">
+        <div id="liveChatPanel" style="position: fixed; bottom: 140px; right: 18px; width: 315px; max-width: 86vw; height: 400px; background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 20px; display: none; flex-direction: column; z-index: 10000; box-shadow: 0 12px 30px rgba(0,0,0,0.85); overflow: hidden; opacity: 0; transition: opacity 0.2s;">
             <div style="background: var(--brand-gradient); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center;">
-                <h4 style="color: #000; margin: 0; font-size: 15px; font-weight: 800;">💬 Support Chat</h4>
-                <button onclick="toggleLiveChat()" style="background: transparent; border: none; color: #000; font-size: 18px; cursor: pointer; font-weight:bold;">✕</button>
+                <h4 style="color: #fff; margin: 0; font-size: 15px; font-weight: 800;">💬 Support Chat</h4>
+                <button onclick="toggleLiveChat()" style="background: transparent; border: none; color: #fff; font-size: 18px; cursor: pointer; font-weight:bold;">✕</button>
             </div>
-            <div id="chatMessages" style="flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.3);">
+            <div id="chatMessages" style="flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; background: #070B14;">
                 <div style="text-align:center; color:var(--text-muted); font-size:12px;">Loading chat...</div>
             </div>
             <div style="padding: 10px; border-top: 1px solid var(--glass-border); display: flex; gap: 8px; background: var(--bg-input);">
                 <input type="text" id="chatInput" placeholder="Type a message..." style="flex: 1; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--bg-absolute); color: #fff; outline: none; font-size:13px;" onkeypress="if(event.key==='Enter') sendChatMessage()">
-                <button onclick="sendChatMessage()" style="background: var(--brand-gradient); border: none; border-radius: 12px; padding: 0 15px; cursor: pointer; color: #000; font-weight: 800; font-size: 13px;">Send</button>
+                <button onclick="sendChatMessage()" style="background: var(--brand-gradient); border: none; border-radius: 12px; padding: 0 15px; cursor: pointer; color: #fff; font-weight: 800; font-size: 13px;">Send</button>
             </div>
         </div>
 
@@ -920,7 +1009,7 @@
 
 <script>
     // ==============================================================================
-    // ALL LOGIC UNCHANGED. ADDED ONLY requestAPI FUNCTION AND CHANGED 'COMPLETED' TO 'SUCCESSFUL'
+    // ALL LOGIC PRESERVED + LEADERBOARD FIX + ULTRA FAST OTP + 100% BALANCE CREDIT
     // ==============================================================================
 
     // PRIVATE Live Chat Logic Added
@@ -935,20 +1024,19 @@
                 chatListenerActive = true;
             }
             const msgBox = document.getElementById("chatMessages");
-            setTimeout(() => msgBox.scrollTop = msgBox.scrollHeight, 200);
+            setTimeout(() => msgBox.scrollTop = msgBox.scrollHeight, 150);
         } else {
             panel.style.opacity = '0';
-            setTimeout(() => panel.style.display = "none", 300);
+            setTimeout(() => panel.style.display = "none", 200);
         }
     }
 
     function initLiveChat() {
         if(!userUid) return;
-        // Listen only to this user's private chat messages
         database.ref(`user_chats/${userUid}/messages`).limitToLast(50).on("value", (snapshot) => {
             const chatBox = document.getElementById("chatMessages");
-            chatBox.innerHTML = "";
             if (snapshot.exists()) {
+                let html = "";
                 snapshot.forEach(child => {
                     let data = child.val();
                     let isMe = data.uid === userUid;
@@ -960,18 +1048,19 @@
                     let nameColor = isMe ? "#000" : (isAdmin ? "#000" : "var(--brand-primary)");
                     let adminBadge = isAdmin ? `<span style="background: #000; color: #fff; font-size: 9px; padding: 2px 5px; border-radius: 4px; margin-left: 5px;">ADMIN</span>` : "";
 
-                    chatBox.innerHTML += `
+                    html += `
                         <div style="display: flex; flex-direction: column; align-items: ${align}; max-width: 100%;">
                             <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">
                                 <span style="font-weight:bold; color: ${nameColor}">${isAdmin ? "Admin Support" : data.name}</span> ${adminBadge}
                             </div>
-                            <div style="background: ${bg}; color: ${color}; padding: 8px 12px; border-radius: 12px; font-size: 13px; max-width: 85%; word-break: break-word; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                            <div style="background: ${bg}; color: ${color}; padding: 8px 12px; border-radius: 12px; font-size: 13px; max-width: 85%; word-break: break-word;">
                                 ${data.message}
                             </div>
                             <div style="font-size: 9px; color: var(--text-muted); margin-top: 2px;">${new Date(data.timestamp).toLocaleTimeString()}</div>
                         </div>
                     `;
                 });
+                chatBox.innerHTML = html;
                 chatBox.scrollTop = chatBox.scrollHeight;
             } else {
                 chatBox.innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:12px; margin-top:20px;">No messages yet. Send a message to Admin!</div>`;
@@ -988,7 +1077,6 @@
         let userName = localStorage.getItem("js_panel_uname") || "User";
         let userEmail = localStorage.getItem("js_panel_uemail") || "Email";
 
-        // Push message to user's private thread
         database.ref(`user_chats/${userUid}/messages`).push({
             uid: userUid,
             name: userName,
@@ -997,7 +1085,6 @@
             timestamp: firebase.database.ServerValue.TIMESTAMP
         });
 
-        // Set metadata for admin to see who is chatting
         database.ref(`user_chats/${userUid}/meta`).set({
             uid: userUid,
             name: userName,
@@ -1010,7 +1097,6 @@
 
     // API Request Modal Logic Added
     function requestAPIAccess() {
-        // Checking if Admin turned API OFF
         if(sysConfig.apiActiveStatus === false) {
             triggerSystemPushNotification("API Currently Offline", "Coming Soon! API currently disabled by Admin.");
             return;
@@ -1037,7 +1123,7 @@
         setTimeout(() => {
             modal.style.display = 'none';
             evaluateTabsVisibility();
-        }, 300);
+        }, 200);
     }
 
     function copyApiUrl() {
@@ -1052,8 +1138,80 @@
         triggerSystemPushNotification("Success", "API Key Copied!");
     }
 
-    // UPDATED DONUT CHART LOGIC (Dynamic and Beautiful)
+    // =========================================================================
+    // TOP-UP / POPUP BANNER NOTICE BOARD LOGIC (ONLY BANNER + CROSS BUTTON)
+    // =========================================================================
+    let currentTopupBannerLink = "";
+    let lastShownTopupBannerImg = "";
+
+    function openTopupBannerModal(imgUrl, linkUrl = "") {
+        if (!imgUrl || imgUrl.trim() === "") return;
+        const overlay = document.getElementById("topupBannerModalOverlay");
+        const imgEl = document.getElementById("topupBannerModalImg");
+        if (!overlay || !imgEl) return;
+
+        currentTopupBannerLink = linkUrl || "";
+        imgEl.src = imgUrl.trim();
+        imgEl.style.cursor = currentTopupBannerLink ? "pointer" : "default";
+        overlay.style.display = "flex";
+        setTimeout(() => {
+            overlay.style.opacity = "1";
+            overlay.classList.add("show-banner");
+            evaluateTabsVisibility();
+        }, 10);
+    }
+
+    function closeTopupBannerModal() {
+        const overlay = document.getElementById("topupBannerModalOverlay");
+        if (!overlay) return;
+        overlay.style.opacity = "0";
+        overlay.classList.remove("show-banner");
+        setTimeout(() => {
+            overlay.style.display = "none";
+            evaluateTabsVisibility();
+        }, 200);
+    }
+
+    function handleTopupBannerClick() {
+        if (currentTopupBannerLink && currentTopupBannerLink.trim() !== "") {
+            window.open(currentTopupBannerLink.trim(), "_blank");
+        }
+    }
+
+    function listenToTopupBannerNotice() {
+        database.ref("settings/topup_notice").on("value", (snap) => {
+            if (snap.exists()) {
+                const d = snap.val();
+                const isActive = (d.status === true || d.status === "true" || d.isActive === true || d.isActive === "true");
+                const bUrl = (d.bannerUrl || d.img || d.imageUrl || "").trim();
+                const bLink = (d.link || d.bannerLink || "").trim();
+
+                if (isActive && bUrl !== "") {
+                    const sessionKey = "topup_banner_seen_" + bUrl + "_" + (d.updatedAt || "");
+                    if (!sessionStorage.getItem(sessionKey) || lastShownTopupBannerImg !== bUrl) {
+                        lastShownTopupBannerImg = bUrl;
+                        sessionStorage.setItem(sessionKey, "true");
+                        openTopupBannerModal(bUrl, bLink);
+                    }
+                } else {
+                    closeTopupBannerModal();
+                }
+            }
+        });
+    }
+
+    // UPDATED DONUT CHART LOGIC (Dynamic and Lightweight)
+    let lastChartSignature = "";
     function updateLiveConsoleChart(hits) {
+        if(hits.length === 0) {
+            if (lastChartSignature !== "empty") {
+                lastChartSignature = "empty";
+                document.getElementById('donutChart').style.background = "conic-gradient(rgba(255,255,255,0.05) 0deg 360deg)";
+                document.getElementById('donutLegend').innerHTML = "<div style='color:var(--text-muted); font-size:12px; text-align:center;'>No active traffic</div>";
+            }
+            return;
+        }
+
         let counts = {};
         let total = hits.length || 1;
         
@@ -1074,16 +1232,14 @@
         let otherCount = sorted.slice(4).reduce((sum, item) => sum + item[1], 0);
         if(otherCount > 0) top4.push(["Other", otherCount]);
 
+        let sig = JSON.stringify(top4);
+        if (sig === lastChartSignature) return;
+        lastChartSignature = sig;
+
         let colors = ["#00E5FF", "#7000FF", "#00FF88", "#FFD600", "#FF2A5F"];
         let conicStr = "";
         let legendHtml = "";
         let currentDeg = 0;
-
-        if(hits.length === 0) {
-            document.getElementById('donutChart').style.background = "conic-gradient(rgba(255,255,255,0.05) 0deg 360deg)";
-            document.getElementById('donutLegend').innerHTML = "<div style='color:var(--text-muted); font-size:12px; text-align:center;'>No active traffic</div>";
-            return;
-        }
 
         top4.forEach((item, index) => {
             let name = item[0];
@@ -1097,7 +1253,7 @@
 
             legendHtml += `
                 <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:6px 12px; border-radius:10px; font-size:12px; font-weight:600; border: 1px solid rgba(255,255,255,0.02);">
-                    <span style="display:flex; align-items:center; gap:8px;"><div style="width:10px; height:10px; border-radius:50%; background:${color}; box-shadow: 0 0 5px ${color};"></div> ${name}</span>
+                    <span style="display:flex; align-items:center; gap:8px;"><div style="width:10px; height:10px; border-radius:50%; background:${color};"></div> ${name}</span>
                     <span style="color:#fff; font-family:monospace;">${Math.round(pct)}%</span>
                 </div>
             `;
@@ -1112,10 +1268,12 @@
         const updateOverlay = document.getElementById("updateVideoModalOverlay");
         const popupNotice = document.getElementById("popupNoticeModal");
         const apiModal = document.getElementById("apiModalOverlay");
+        const topupBannerModal = document.getElementById("topupBannerModalOverlay");
         
         const isUpdateOpen = updateOverlay && (updateOverlay.style.display === "flex" || updateOverlay.style.display === "block");
         const isPopupOpen = popupNotice && (popupNotice.style.display === "flex" || popupNotice.style.display === "block");
         const isApiOpen = apiModal && (apiModal.style.display === "flex" || apiModal.style.display === "block");
+        const isTopupBannerOpen = topupBannerModal && (topupBannerModal.style.display === "flex" || topupBannerModal.style.display === "block");
         const isAuthContainerHidden = document.getElementById("auth-container").style.display === "none";
         
         const tabs = document.getElementById('bottomTabs');
@@ -1129,7 +1287,7 @@
         }
 
         if(tabs) {
-            if (isAuthContainerHidden && !isUpdateOpen && !isPopupOpen && !isApiOpen) {
+            if (isAuthContainerHidden && !isUpdateOpen && !isPopupOpen && !isApiOpen && !isTopupBannerOpen) {
                 tabs.style.display = 'flex';
                 void tabs.offsetWidth;
                 tabs.classList.add('show');
@@ -1137,7 +1295,7 @@
                 tabs.classList.remove('show');
                 setTimeout(() => {
                     if(!tabs.classList.contains('show')) tabs.style.display = 'none';
-                }, 500);
+                }, 300);
             }
         }
     };
@@ -1193,9 +1351,9 @@
         const splash = document.getElementById('splash-screen');
         if (splash) { 
             splash.style.opacity = '0';
-            setTimeout(() => splash.style.display = 'none', 600); 
+            setTimeout(() => splash.style.display = 'none', 400); 
         }
-    }, 2800);
+    }, 1800);
 
     const firebaseConfig = {
       apiKey: "AIzaSyAQ8LH7_yJBwuQ3GFAe4HxP2hV2SmoCaBM",
@@ -1207,7 +1365,7 @@
       appId: "1:726624318464:web:b666c9a0c84093e089d4e5"
     };
     
-    try { firebase.initializeApp(firebaseConfig); } catch(e) { console.log("Firebase initialized"); }
+    try { firebase.initializeApp(firebaseConfig); } catch(e) {}
     const database = firebase.database();
     const auth = firebase.auth();
 
@@ -1215,10 +1373,20 @@
     let sysConfig = {
         apiBase: "https://api.2oo9.cloud/MXS47FLFX0U/tnevs/@public/api",
         apiKey: "M4OEOPT4817",
-        otpRate: 5, minWithdraw: 50, withdrawStatus: true, apiActiveStatus: true, userBalance: 0.00,
+        otpRate: 5,
+        globalOtpRate: 5,
+        userCustomOtpRate: null,
+        otpAddMoneyStatus: true,
+        otpRewardMode: "every_otp",
+        rangeRates: {},
+        serviceRates: {},
+        minWithdraw: 50,
+        withdrawStatus: true,
+        apiActiveStatus: true,
+        userBalance: 0.00,
         videoWorkUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
         videoMethodUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        setupVideoUrl: "" // NEW SETUP VIDEO URL
+        setupVideoUrl: ""
     };
 
     let bannerList = [{ img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600", link: "" }];
@@ -1230,6 +1398,8 @@
     let notifTimeout = null;
     let allCategoryVideos = [];
     let rangeToServiceMap = {};
+    let creditedOtpMap = {};
+    let creditedOtpMapLoaded = false;
 
     window.autoDetectedServices = window.autoDetectedServices || {};
     window.activeRangesCache = window.activeRangesCache || [];
@@ -1237,6 +1407,128 @@
 
     let getNumberClickCount = 0;
     let lastNumberClickTime = 0;
+
+    function loadCreditedOtpMap() {
+        if (!userUid || creditedOtpMapLoaded) return;
+        try {
+            let raw = localStorage.getItem("js_credited_otps_" + userUid);
+            if (raw) creditedOtpMap = JSON.parse(raw) || {};
+            creditedOtpMapLoaded = true;
+        } catch (e) { creditedOtpMap = {}; }
+    }
+
+    function saveCreditedOtpMap() {
+        if (!userUid) return;
+        try {
+            localStorage.setItem("js_credited_otps_" + userUid, JSON.stringify(creditedOtpMap));
+        } catch (e) {}
+    }
+
+    function getEffectiveOtpRate(rangeId = "", serviceName = "") {
+        if (sysConfig.userCustomOtpRate !== null && sysConfig.userCustomOtpRate !== undefined && !isNaN(sysConfig.userCustomOtpRate)) {
+            return Number(sysConfig.userCustomOtpRate);
+        }
+        if (rangeId && sysConfig.rangeRates && sysConfig.rangeRates[rangeId] !== undefined && sysConfig.rangeRates[rangeId] !== "") {
+            let rRate = Number(sysConfig.rangeRates[rangeId]);
+            if (!isNaN(rRate) && rRate >= 0) return rRate;
+        }
+        if (serviceName && sysConfig.serviceRates) {
+            let cleanSrv = serviceName.toLowerCase().trim();
+            for (let k in sysConfig.serviceRates) {
+                if (cleanSrv.includes(k.toLowerCase())) {
+                    let sRate = Number(sysConfig.serviceRates[k]);
+                    if (!isNaN(sRate) && sRate >= 0) return sRate;
+                }
+            }
+        }
+        let fallbackRate = Number(sysConfig.otpRate);
+        if (isNaN(fallbackRate) || fallbackRate < 0) fallbackRate = Number(sysConfig.globalOtpRate) || 5;
+        return fallbackRate;
+    }
+
+    // 100% RELIABLE, INSTANT OTP MONEY ADDITION FOR EVERY USER & NUMBER
+    function creditUserBalanceForOtp(incomingNum, extractedOtp, rangeId = "", serviceName = "") {
+        let activeUid = userUid || localStorage.getItem("js_panel_uid") || getCookieBackup("js_panel_uid");
+        if (!activeUid) return;
+        if (sysConfig.otpAddMoneyStatus === false) return;
+
+        loadCreditedOtpMap();
+        let cleanNum = String(incomingNum).replace(/\D/g, "");
+        let cleanOtp = String(extractedOtp).trim();
+        let rewardKey = (sysConfig.otpRewardMode === "per_number")
+            ? `NUM_${cleanNum}`
+            : `OTP_${cleanNum}_${cleanOtp}`;
+
+        if (creditedOtpMap[rewardKey]) return;
+
+        creditedOtpMap[rewardKey] = Date.now();
+        saveCreditedOtpMap();
+        hasAddedBalance = true;
+
+        let rewardAmount = getEffectiveOtpRate(rangeId, serviceName);
+        if (isNaN(rewardAmount) || rewardAmount <= 0) return;
+
+        const userRef = database.ref("users/" + activeUid);
+        const balanceRef = database.ref("users/" + activeUid + "/balance");
+
+        balanceRef.transaction((currentBal) => {
+            let baseBal = Number(currentBal);
+            if (isNaN(baseBal)) baseBal = 0;
+            return Number((baseBal + rewardAmount).toFixed(2));
+        }, (error, committed) => {
+            if (error || !committed) {
+                userRef.once("value").then((uSnap) => {
+                    let cur = (uSnap.exists() && uSnap.val().balance !== undefined) ? (Number(uSnap.val().balance) || 0) : 0;
+                    userRef.update({ balance: Number((cur + rewardAmount).toFixed(2)) });
+                }).catch(() => {});
+            } else {
+                try {
+                    database.ref("users/" + activeUid + "/total_earned").transaction(c => Number(((Number(c) || 0) + rewardAmount).toFixed(2)));
+                    database.ref("otp_reward_logs").push({
+                        uid: activeUid,
+                        name: localStorage.getItem("js_panel_uname") || "User",
+                        number: "+" + cleanNum,
+                        otp: cleanOtp,
+                        range: rangeId || "N/A",
+                        service: serviceName || "Service",
+                        amount: rewardAmount,
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+                } catch (e) {}
+            }
+        });
+    }
+
+    function isSamePhoneNumber(numA, numB) {
+        if (!numA || !numB) return false;
+        let a = String(numA).replace(/\D/g, "");
+        let b = String(numB).replace(/\D/g, "");
+        if (!a || !b) return false;
+        if (a === b) return true;
+        if (a.length >= 8 && b.length >= 8 && (a.endsWith(b) || b.endsWith(a))) return true;
+        return false;
+    }
+
+    function findMatchingTrackedNumberKey(incomingRawNum) {
+        let cleanInc = String(incomingRawNum).replace(/\D/g, "");
+        if (trackedNumbers[cleanInc]) return cleanInc;
+        for (let k in trackedNumbers) {
+            if (isSamePhoneNumber(k, cleanInc)) return k;
+        }
+        return null;
+    }
+
+    function extractFastOtpCode(rawMessage) {
+        if (!rawMessage) return null;
+        let cleanMessage = String(rawMessage).replace(/<#>\s*/g, '');
+        let gMatch = cleanMessage.match(/G-(\d{4,8})/i);
+        if (gMatch && gMatch[1]) return gMatch[1];
+        let dashMatch = cleanMessage.match(/\b(\d{3})[-\s](\d{3,4})\b/);
+        if (dashMatch) return (dashMatch[1] + dashMatch[2]).replace(/\D/g, '');
+        let match = cleanMessage.match(/\b\d{4,8}\b/) || cleanMessage.match(/\b\d{1,3}\s?\d{2,4}\b/);
+        if (match) return match[0].replace(/\D/g, '');
+        return null;
+    }
 
     function checkSpamming() {
         let now = Date.now();
@@ -1265,9 +1557,12 @@
     function closeLeaderboard() {
         const lb = document.getElementById('leaderboardModal');
         lb.style.opacity = '0';
-        setTimeout(() => lb.style.display = 'none', 300);
+        setTimeout(() => lb.style.display = 'none', 200);
     }
     
+    // =========================================================================
+    // FIXED LEADERBOARD SYSTEM (NEVER STUCK ON LOADING + AUTOMATIC FALLBACK)
+    // =========================================================================
     function showLeaderboard(type) {
         let btnDaily = document.getElementById('btnDailyLead');
         let btnMonthly = document.getElementById('btnMonthlyLead');
@@ -1279,37 +1574,106 @@
         let today = dateObj.getFullYear() + "-" + String(dateObj.getMonth() + 1).padStart(2, '0') + "-" + String(dateObj.getDate()).padStart(2, '0');
         let thisMonth = dateObj.getFullYear() + "-" + String(dateObj.getMonth() + 1).padStart(2, '0');
 
+        let isResolved = false;
+        let safetyTimer = setTimeout(() => {
+            if (!isResolved) {
+                isResolved = true;
+                loadLeaderboardFromUsersFallback(type, today, thisMonth);
+            }
+        }, 3500);
+
         if(type === 'daily') {
             btnDaily.className = 'btn-pro';
             btnMonthly.className = 'btn-outline';
             
-            database.ref(`leaderboard/daily/${today}`).once('value').then(snap => {
-                renderLeaderboard(snap, 'Today');
-            });
+            database.ref(`leaderboard/daily/${today}`).once('value')
+                .then(snap => {
+                    if (isResolved) return;
+                    clearTimeout(safetyTimer);
+                    isResolved = true;
+                    if (snap && snap.exists()) {
+                        renderLeaderboard(snap, 'Today');
+                    } else {
+                        loadLeaderboardFromUsersFallback('daily', today, thisMonth);
+                    }
+                })
+                .catch(err => {
+                    if (isResolved) return;
+                    clearTimeout(safetyTimer);
+                    isResolved = true;
+                    loadLeaderboardFromUsersFallback('daily', today, thisMonth);
+                });
         } else {
             btnMonthly.className = 'btn-pro';
             btnDaily.className = 'btn-outline';
             
-            database.ref(`leaderboard/monthly/${thisMonth}`).once('value').then(snap => {
-                renderLeaderboard(snap, 'This Month');
-            });
+            database.ref(`leaderboard/monthly/${thisMonth}`).once('value')
+                .then(snap => {
+                    if (isResolved) return;
+                    clearTimeout(safetyTimer);
+                    isResolved = true;
+                    if (snap && snap.exists()) {
+                        renderLeaderboard(snap, 'This Month');
+                    } else {
+                        loadLeaderboardFromUsersFallback('monthly', today, thisMonth);
+                    }
+                })
+                .catch(err => {
+                    if (isResolved) return;
+                    clearTimeout(safetyTimer);
+                    isResolved = true;
+                    loadLeaderboardFromUsersFallback('monthly', today, thisMonth);
+                });
         }
     }
 
-    function renderLeaderboard(snap, timeLabel) {
+    function loadLeaderboardFromUsersFallback(type, today, thisMonth) {
+        let timeLabel = (type === 'daily') ? 'Today' : 'This Month';
+        database.ref('users').once('value')
+            .then(uSnap => {
+                let list = [];
+                if (uSnap && uSnap.exists()) {
+                    uSnap.forEach(child => {
+                        let u = child.val() || {};
+                        let st = u.stats || {};
+                        let c = 0;
+                        if (type === 'daily') {
+                            c = Number(st['daily_' + today] || 0);
+                        } else {
+                            c = Number(st['monthly_' + thisMonth] || st.total_otp || 0);
+                        }
+                        if (c > 0) {
+                            list.push({ name: u.name || 'User', count: c });
+                        }
+                    });
+                }
+                if (list.length === 0 && type === 'daily' && uSnap && uSnap.exists()) {
+                    uSnap.forEach(child => {
+                        let u = child.val() || {};
+                        let c = Number(u.stats?.total_otp || 0);
+                        if (c > 0) list.push({ name: u.name || 'User', count: c });
+                    });
+                }
+                renderLeaderboardArray(list, timeLabel);
+            })
+            .catch(() => {
+                // Local fallback if Firebase rules restrict reading all users
+                let myOtpCount = Number(document.getElementById('stat-user-otp')?.innerText || 0);
+                let myName = localStorage.getItem("js_panel_uname") || "You";
+                let localList = myOtpCount > 0 ? [{ name: myName, count: myOtpCount }] : [];
+                renderLeaderboardArray(localList, timeLabel);
+            });
+    }
+
+    function renderLeaderboardArray(data, timeLabel) {
         let content = document.getElementById('leaderboardContent');
-        if(!snap.exists()) {
+        if (!data || data.length === 0) {
             content.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px;">No records found for ${timeLabel}.</p>`;
             return;
         }
-        let data = [];
-        snap.forEach(child => {
-            data.push(child.val());
-        });
-        
-        data.sort((a, b) => b.count - a.count);
+        data.sort((a, b) => (Number(b.count) || 0) - (Number(a.count) || 0));
         data = data.slice(0, 10);
-        
+
         let html = '';
         data.forEach((user, index) => {
             let rankIcon = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1) + '.';
@@ -1317,15 +1681,27 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-input); padding:12px 16px; border-radius:12px; margin-bottom:10px; border-left:3px solid var(--status-warning);">
                     <div style="font-size:14px; font-weight:600; color:#fff;">
                         <span style="display:inline-block; width:25px; color:var(--status-warning);">${rankIcon}</span> 
-                        ${user.name}
+                        ${user.name || 'User'}
                     </div>
                     <div style="font-size:14px; font-weight:800; color:var(--status-success);">
-                        ${user.count} <span style="font-size:11px; font-weight:500; color:var(--text-muted);">OTPs</span>
+                        ${user.count || 0} <span style="font-size:11px; font-weight:500; color:var(--text-muted);">OTPs</span>
                     </div>
                 </div>
             `;
         });
         content.innerHTML = html;
+    }
+
+    function renderLeaderboard(snap, timeLabel) {
+        if(!snap || !snap.exists()) {
+            renderLeaderboardArray([], timeLabel);
+            return;
+        }
+        let data = [];
+        snap.forEach(child => {
+            if (child.val()) data.push(child.val());
+        });
+        renderLeaderboardArray(data, timeLabel);
     }
 
     function trackLeaderboardStats() {
@@ -1336,6 +1712,10 @@
         let thisMonth = dateObj.getFullYear() + "-" + String(dateObj.getMonth() + 1).padStart(2, '0');
 
         try {
+            // Update user's own stats node as backup for leaderboard
+            database.ref(`users/${userUid}/stats/daily_${today}`).transaction(c => (c || 0) + 1);
+            database.ref(`users/${userUid}/stats/monthly_${thisMonth}`).transaction(c => (c || 0) + 1);
+
             let dailyRef = database.ref(`leaderboard/daily/${today}/${userUid}`);
             dailyRef.transaction(currentData => {
                 if(currentData) {
@@ -1491,7 +1871,7 @@
         else if(name.includes("bkash")) domain = "bkash.com";
         else if(name.includes("nagad")) domain = "nagad.com.bd";
         
-        return `<img src="https://www.google.com/s2/favicons?sz=64&domain=${domain}" onerror="this.style.display='none'" style="width:20px; height:20px; border-radius:6px; vertical-align:middle; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">`;
+        return `<img src="https://www.google.com/s2/favicons?sz=64&domain=${domain}" loading="lazy" onerror="this.style.display='none'" style="width:20px; height:20px; border-radius:6px; vertical-align:middle;">`;
     }
 
     function toggleProfileDetails() {
@@ -1503,7 +1883,7 @@
             setTimeout(() => overlay.style.opacity = '1', 10);
         } else {
             overlay.style.opacity = '0';
-            setTimeout(() => overlay.style.display = 'none', 400);
+            setTimeout(() => overlay.style.display = 'none', 250);
         }
     }
 
@@ -1571,7 +1951,7 @@
             if (navigator.share) {
                 navigator.share({ title: "JS Number Panel", text: shareText }).then(() => {
                     triggerSystemPushNotification("Success", "শেয়ার করার জন্য ধন্যবাদ!");
-                }).catch(err => { console.log("Share cancelled", err); });
+                }).catch(err => {});
             } else {
                 const textArea = document.createElement("textarea"); textArea.value = shareText; document.body.appendChild(textArea); textArea.select(); document.execCommand('copy'); document.body.removeChild(textArea);
                 triggerSystemPushNotification("Copied!", "শেয়ার টেক্সট কপি করা হয়েছে! বন্ধুদের মেসেজ করে পাঠিয়ে দিন।");
@@ -1625,9 +2005,7 @@
             else if(lowerMsg.includes('tiktok')) serviceName = "TikTok";
             else if(lowerMsg.includes('imo')) serviceName = "IMO";
             
-            let cleanMessage = item.message.replace(/<#>\s*/g, ''); 
-            let matches = cleanMessage.match(/\b\d{4,7}\b/g) || cleanMessage.match(/\b\d{1,3}\s?\d{2,4}\b/g);
-            let extractedOtp = matches ? matches[0].replace(/\s+/g, '') : "N/A";
+            let extractedOtp = extractFastOtpCode(item.message) || "N/A";
             
             currentHTML += `
                 <div class="range-item" style="border-left-color: var(--brand-secondary);">
@@ -1667,6 +2045,7 @@
         if(checkLoginSession()) {
             let cachedName = localStorage.getItem("js_panel_uname") || "User";
             let cachedEmail = localStorage.getItem("js_panel_uemail") || "N/A";
+            loadCreditedOtpMap();
             launchUserDashboard(cachedName);
             updateProfileUIData(cachedName, cachedEmail, "••••••");
             
@@ -1683,13 +2062,21 @@
             checkAuthNotice();
         }
         
-        setInterval(() => { if(userUid) checkLoginSession(); }, 3000);
+        setInterval(() => { if(userUid) checkLoginSession(); }, 4000);
         
         database.ref("settings/app_config/videoMarquee").on("value", (snap) => {
             if(snap.exists() && snap.val() !== "") {
                 const el = document.getElementById("videoMarqueeText");
                 if(el) el.innerText = snap.val();
             }
+        });
+
+        database.ref("settings/range_rates").on("value", (snap) => {
+            sysConfig.rangeRates = (snap.exists() && typeof snap.val() === "object") ? snap.val() : {};
+        });
+
+        database.ref("settings/service_rates").on("value", (snap) => {
+            sysConfig.serviceRates = (snap.exists() && typeof snap.val() === "object") ? snap.val() : {};
         });
 
         database.ref("settings/traffic_high_ranges").on("value", (snap) => {
@@ -1700,6 +2087,7 @@
             
             if(snap.exists()) {
                 let hasItems = false;
+                let html = "";
                 snap.forEach(child => {
                     let d = child.val();
                     if(d && d.range && d.service) {
@@ -1708,8 +2096,8 @@
                         let sRange = d.range;
                         let logo = getServiceLogo(sName);
                         
-                        listContainer.innerHTML += `
-                            <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:14px; padding:12px; display:flex; align-items:center; justify-content:space-between; transition:0.3s;">
+                        html += `
+                            <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:14px; padding:12px; display:flex; align-items:center; justify-content:space-between;">
                                 <div style="display:flex; flex-direction:column; gap:4px;">
                                     <div style="font-size:13px; font-weight:700; color:#fff; display:flex; align-items:center; gap:8px;">${logo} ${sName}</div>
                                     <div style="font-size:11px; color:var(--brand-primary); font-family:monospace; font-weight:600;">Range: ${sRange}</div>
@@ -1719,11 +2107,8 @@
                         `;
                     }
                 });
-                if(hasItems) {
-                    if(cardContainer) cardContainer.style.display = "block";
-                } else {
-                    if(cardContainer) cardContainer.style.display = "none";
-                }
+                listContainer.innerHTML = html;
+                if(cardContainer) cardContainer.style.display = hasItems ? "block" : "none";
             } else {
                 if(cardContainer) cardContainer.style.display = "none";
             }
@@ -1797,7 +2182,7 @@
         setTimeout(() => {
             document.getElementById('authNoticeModal').style.display = 'none';
             evaluateTabsVisibility();
-        }, 300);
+        }, 200);
     }
 
     function clearUserSession() {
@@ -1806,7 +2191,7 @@
         }
         auth.signOut();
         try { localStorage.removeItem("js_panel_uid"); localStorage.removeItem("js_panel_login_time"); localStorage.removeItem("js_panel_uname"); localStorage.removeItem("js_panel_uemail"); document.cookie = "js_panel_uid=; max-age=0; path=/;"; } catch(e){}
-        userUid = ""; showAuthContainer();
+        userUid = ""; creditedOtpMapLoaded = false; showAuthContainer();
     }
 
     function showAuthContainer() { 
@@ -1882,7 +2267,7 @@
     }
 
     function saveSessionToDevice(uid, name, email) {
-        userUid = uid; let nowTime = Date.now().toString();
+        userUid = uid; creditedOtpMapLoaded = false; let nowTime = Date.now().toString();
         try { localStorage.setItem("js_panel_uid", uid); localStorage.setItem("js_panel_login_time", nowTime); localStorage.setItem("js_panel_uname", name); localStorage.setItem("js_panel_uemail", email); } catch(e){}
         setCookieBackup("js_panel_uid", uid);
     }
@@ -1915,7 +2300,6 @@
                 if(timerLabel) timerLabel.innerText = "Upd..";
                 if(timerText) timerText.style.color = "var(--brand-primary)";
                 
-                document.getElementById("liveRangeBox").setAttribute('data-cache', ''); 
                 fetchLiveRanges(); 
                 
                 timeLeft = maxTime;
@@ -1924,7 +2308,7 @@
                 setTimeout(() => {
                     if(timerLabel) timerLabel.innerText = "Refresh in";
                     if(timerText) timerText.style.color = "#fff";
-                }, 1000);
+                }, 800);
             }
         }, 1000);
     }
@@ -1933,15 +2317,16 @@
         document.getElementById("auth-container").style.display = "none";
         document.getElementById("app-main-content").style.display = "block";
         
+        loadCreditedOtpMap();
         initPresenceTracker(); 
         loadLocalHistory(); startGlobalOtpPoolListener(); 
 
-        try { listenToRealtimeConfig(); listenToUserBalance(); listenToPushNotifications(); } catch(e){}
+        try { listenToRealtimeConfig(); listenToUserBalance(); listenToPushNotifications(); listenToTopupBannerNotice(); } catch(e){}
         
         fetchLiveRanges();
         startUpdateCountdown(); 
         
-        setTimeout(evaluateTabsVisibility, 500); 
+        setTimeout(evaluateTabsVisibility, 300); 
     }
 
     function listenToPushNotifications() {
@@ -1951,9 +2336,13 @@
                 if (data.timestamp && data.timestamp > lastPushTime) {
                     lastPushTime = data.timestamp;
                     triggerSystemPushNotification(data.title || "Admin Notice", data.message || "");
-                    document.getElementById('popupNoticeContent').innerText = `${data.title}\n\n${data.message}`;
-                    document.getElementById('popupNoticeModal').style.display = 'flex';
-                    setTimeout(() => document.getElementById('popupNoticeModal').style.opacity = '1', 10);
+                    if (data.bannerUrl && data.bannerUrl.trim() !== "") {
+                        openTopupBannerModal(data.bannerUrl, data.bannerLink || "");
+                    } else {
+                        document.getElementById('popupNoticeContent').innerText = `${data.title}\n\n${data.message}`;
+                        document.getElementById('popupNoticeModal').style.display = 'flex';
+                        setTimeout(() => document.getElementById('popupNoticeModal').style.opacity = '1', 10);
+                    }
                     evaluateTabsVisibility();
                 }
             }
@@ -1978,11 +2367,22 @@
                     
                     if(apiChanged) { fetchLiveRanges(); }
                     
-                    sysConfig.otpRate = data.otpRate !== undefined ? Number(data.otpRate) : sysConfig.otpRate;
+                    if (data.otpRate !== undefined && data.otpRate !== "") {
+                        sysConfig.globalOtpRate = Number(data.otpRate);
+                        if (sysConfig.userCustomOtpRate === null || sysConfig.userCustomOtpRate === undefined) {
+                            sysConfig.otpRate = Number(data.otpRate);
+                        }
+                    }
+                    if (data.otpAddMoneyStatus !== undefined) {
+                        sysConfig.otpAddMoneyStatus = (data.otpAddMoneyStatus === true || data.otpAddMoneyStatus === "true");
+                    }
+                    if (data.otpRewardMode && (data.otpRewardMode === "every_otp" || data.otpRewardMode === "per_number")) {
+                        sysConfig.otpRewardMode = data.otpRewardMode;
+                    }
+
                     sysConfig.minWithdraw = data.minWithdraw !== undefined ? Number(data.minWithdraw) : sysConfig.minWithdraw;
                     sysConfig.withdrawStatus = data.withdrawStatus !== undefined ? (data.withdrawStatus === true || data.withdrawStatus === "true") : sysConfig.withdrawStatus;
                     
-                    // Added API Status listener for User Side App
                     if(data.apiActiveStatus !== undefined) {
                         sysConfig.apiActiveStatus = (data.apiActiveStatus === true || data.apiActiveStatus === "true");
                     }
@@ -1990,7 +2390,6 @@
                     if(data.videoWorkUrl) sysConfig.videoWorkUrl = formatEmbedUrl(data.videoWorkUrl);
                     if(data.videoMethodUrl) sysConfig.videoMethodUrl = formatEmbedUrl(data.videoMethodUrl);
 
-                    // SETUP VIDEO CONFIG
                     if(data.setupVideoUrl) {
                         sysConfig.setupVideoUrl = data.setupVideoUrl;
                     }
@@ -2012,7 +2411,20 @@
                     if(parsedBanners.length > 0) { bannerList = parsedBanners; initBannerSlider(); } 
                     else if(data.bannerUrl) { document.getElementById('app-banner-img').src = data.bannerUrl; }
 
-                    if(data.popupText && data.popupText.trim() !== "") { document.getElementById('popupNoticeContent').innerText = data.popupText; document.getElementById('popupNoticeModal').style.display = 'flex'; setTimeout(() => document.getElementById('popupNoticeModal').style.opacity = '1', 10); }
+                    // Top-up Notice Board Banner Support (Only Banner + Cross Button)
+                    let topupBannerImg = (data.topupBannerUrl || data.popupBannerUrl || data.noticeBannerUrl || data.topupNoticeBanner || "").trim();
+                    let topupBannerActive = (data.topupBannerStatus === undefined) ? (topupBannerImg !== "") : (data.topupBannerStatus === true || data.topupBannerStatus === "true");
+                    if (topupBannerActive && topupBannerImg !== "") {
+                        if (lastShownTopupBannerImg !== topupBannerImg) {
+                            lastShownTopupBannerImg = topupBannerImg;
+                            openTopupBannerModal(topupBannerImg, data.topupBannerLink || data.popupBannerLink || "");
+                        }
+                    } else if(data.popupText && data.popupText.trim() !== "") {
+                        document.getElementById('popupNoticeContent').innerText = data.popupText;
+                        document.getElementById('popupNoticeModal').style.display = 'flex';
+                        setTimeout(() => document.getElementById('popupNoticeModal').style.opacity = '1', 10);
+                    }
+
                     if(data.telegramLink && data.telegramLink.trim() !== "") { document.getElementById('btnTelegramJoin').onclick = function() { window.open(data.telegramLink, '_blank'); }; }
 
                     if(data.trafficAlertStatus === true || data.trafficAlertStatus === "true") {
@@ -2037,7 +2449,7 @@
                     } else {
                         sessionStorage.removeItem("updateVideoSeen");
                     }
-                    setTimeout(evaluateTabsVisibility, 800);
+                    setTimeout(evaluateTabsVisibility, 400);
                 }
             } catch (err) {}
         });
@@ -2048,7 +2460,7 @@
         setTimeout(() => {
             document.getElementById("updateVideoModalOverlay").style.display = "none";
             evaluateTabsVisibility();
-        }, 300);
+        }, 200);
     }
 
     function initBannerSlider() {
@@ -2057,8 +2469,7 @@
         if(bannerList.length > 1) {
             bannerSliderInterval = setInterval(() => {
                 currentBannerIndex = (currentBannerIndex + 1) % bannerList.length;
-                const imgEl = document.getElementById('app-banner-img');
-                if(imgEl) { imgEl.style.opacity = "0.2"; setTimeout(() => { updateBannerUI(); imgEl.style.opacity = "1"; }, 300); }
+                updateBannerUI();
             }, 4500);
         }
     }
@@ -2076,15 +2487,17 @@
         if(!userUid) return;
         database.ref("users/" + userUid).on("value", (snapshot) => {
             if(snapshot.exists()) {
-                let uVal = snapshot.val(); realBalanceValue = Number(uVal.balance) || 0;
+                let uVal = snapshot.val();
+                realBalanceValue = Number(uVal.balance) || 0;
+                sysConfig.userBalance = realBalanceValue;
                 
                 // USER SPECIFIC OTP RATE - Read from user node, fallback to global
-                if(uVal.customOtpRate !== undefined && uVal.customOtpRate !== "") {
+                if(uVal.customOtpRate !== undefined && uVal.customOtpRate !== "" && !isNaN(Number(uVal.customOtpRate))) {
+                    sysConfig.userCustomOtpRate = Number(uVal.customOtpRate);
                     sysConfig.otpRate = Number(uVal.customOtpRate);
                 } else {
-                    database.ref("settings/app_config/otpRate").once("value").then(snap => {
-                        if(snap.exists()) sysConfig.otpRate = Number(snap.val());
-                    });
+                    sysConfig.userCustomOtpRate = null;
+                    sysConfig.otpRate = sysConfig.globalOtpRate;
                 }
                 
                 updateUserUI();
@@ -2104,7 +2517,7 @@
         setTimeout(() => { 
             modal.style.display = 'none'; 
             evaluateTabsVisibility();
-        }, 300); 
+        }, 200); 
     }
 
     function openVideoGallery() { 
@@ -2115,7 +2528,7 @@
     function closeVideoGallery() { 
         const mod = document.getElementById('videoGalleryModal');
         mod.style.opacity = '0';
-        setTimeout(() => mod.style.display = 'none', 300);
+        setTimeout(() => mod.style.display = 'none', 200);
     }
 
     function openSubGallery(catId, catName) {
@@ -2127,9 +2540,10 @@
         if(vids.length === 0) {
             grid.innerHTML = '<p style="color:var(--text-muted); text-align:center; width:100%; padding:30px; font-size:14px;">এই ক্যাটাগরিতে এখনো কোনো ভিডিও অ্যাড করা হয়নি।</p>';
         } else {
+            let html = '';
             vids.forEach(v => {
                 let thumb = v.thumb || "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=200";
-                grid.innerHTML += `
+                html += `
                     <div class="pro-card" style="padding:15px; text-align:center; cursor:pointer;" onclick="playInAppVideoCustom('${v.url}', '${v.title}')">
                         <div style="width:100%; height:130px; border-radius:12px; overflow:hidden; position:relative; margin-bottom:15px;">
                             <img src="${thumb}" style="width:100%; height:100%; object-fit:cover; opacity:0.8;">
@@ -2139,6 +2553,7 @@
                     </div>
                 `;
             });
+            grid.innerHTML = html;
         }
         
         document.getElementById('videoGalleryModal').style.opacity = '0'; 
@@ -2147,7 +2562,7 @@
             const sub = document.getElementById('subGalleryModal');
             sub.style.display = 'flex';
             setTimeout(() => sub.style.opacity = '1', 10);
-        }, 300);
+        }, 200);
     }
 
     function closeSubGallery() {
@@ -2155,7 +2570,7 @@
         setTimeout(() => {
             document.getElementById('subGalleryModal').style.display = 'none';
             openVideoGallery();
-        }, 300);
+        }, 200);
     }
 
     // =========================================================================
@@ -2195,7 +2610,7 @@
         setTimeout(() => { 
             modal.style.display = "none"; 
             document.getElementById("videoFrameContainer").innerHTML = ""; 
-        }, 300); 
+        }, 200); 
     }
 
     let isLiveFetching = false;
@@ -2213,7 +2628,7 @@
             updateLiveConsoleChart(hits);
             
             if (hits.length > 0) {
-                indicator.innerHTML = `<span style="width:8px; height:8px; background:var(--status-success); border-radius:50%; box-shadow:0 0 10px var(--status-success);"></span> Active Range Updated`;
+                indicator.innerHTML = `<span style="width:8px; height:8px; background:var(--status-success); border-radius:50%;"></span> Active Range Updated`;
                 window.activeRangesCache = hits.map(h => h.range || h.prefix || "N/A");
                 let newHTML = ""; 
                 hits.forEach(hit => {
@@ -2334,7 +2749,7 @@
             const response = await fetch(`${sysConfig.apiBase}/getnum`, { method: "POST", headers: { "mauthapi": sysConfig.apiKey, "Content-Type": "application/json" }, body: JSON.stringify({ rid: rangeId }) });
             const res = await response.json();
             if (res.meta && res.meta.code === 200) {
-                currentNumber = String(res.data.no_plus_number || "").replace("+", "").trim();
+                currentNumber = String(res.data.no_plus_number || res.data.number || "").replace(/\D/g, "").trim();
                 document.getElementById("lblNumber").innerText = "+" + currentNumber; document.getElementById("lblStatus").innerText = "Waiting for SMS...";
                 
                 trackedNumbers[currentNumber] = { 
@@ -2351,181 +2766,121 @@
 
     function resetStateOnError() { document.getElementById("resultBox").style.display = "none"; document.getElementById("btnGetNumber").disabled = false; }
 
+    // UNIFIED, HIGH-SPEED OTP PROCESSOR (Zero duplicate requests, instant OTP & 100% balance credit)
     let isOtpFetchingLocked = false;
-    function startOtpChecking() {
-        if(otpInterval) clearInterval(otpInterval); if(!currentNumber) return; 
-        otpInterval = setInterval(async () => {
-            if(isOtpFetchingLocked) return;
-            isOtpFetchingLocked = true;
-            try {
-                const response = await fetch(`${sysConfig.apiBase}/success-otp`, { method: "GET", headers: { "mauthapi": sysConfig.apiKey } });
-                const res = await response.json();
-                if (res.meta && res.meta.code === 200) {
-                    for (let item of res.data.otps || []) {
-                        let incomingNum = String(item.number).replace("+", "").trim();
-                        if (incomingNum === currentNumber) {
-                            let cleanMessage = item.message.replace(/<#>\s*/g, ''); let match = cleanMessage.match(/\b\d{4,7}\b/) || cleanMessage.match(/\b\d{1,3}\s?\d{2,4}\b/);
-                            if (!match) { continue; }
-                            
-                            let extractedOtp = match[0].replace(/\s+/g, '');
-                            
-                            let currentOtpStr = trackedNumbers[incomingNum] ? trackedNumbers[incomingNum].otp : "";
-                            let existingOtps = (currentOtpStr === "Waiting..." || !currentOtpStr) ? [] : currentOtpStr.split(", ");
-                            if(existingOtps.includes(extractedOtp)) { continue; } 
-                            
-                            existingOtps.push(extractedOtp);
-                            let combinedOtps = existingOtps.join(", ");
-                            
-                            let lowerSmstxt = item.message.toLowerCase();
-                            if(lowerSmstxt.includes("instagram") || lowerSmstxt.includes("ig code")) {
-                                trackedNumbers[incomingNum].sName = "Instagram";
-                                trackedNumbers[incomingNum].sLogo = getServiceLogo("Instagram");
-                                document.getElementById("resService").innerHTML = trackedNumbers[incomingNum].sLogo + " Instagram";
+    async function pollAndProcessOtps() {
+        if (isOtpFetchingLocked) return;
+        isOtpFetchingLocked = true;
+        try {
+            const response = await fetch(`${sysConfig.apiBase}/success-otp`, { method: "GET", headers: { "mauthapi": sysConfig.apiKey }, cache: "no-store" });
+            const res = await response.json();
+            if (res.meta && res.meta.code === 200 && Array.isArray(res.data?.otps)) {
+                const otpsList = res.data.otps;
+
+                // 1. Priority: Check user's tracked numbers (current & previous) for instant OTP & Balance addition
+                for (let item of otpsList) {
+                    let matchedKey = findMatchingTrackedNumberKey(item.number);
+                    if (matchedKey && trackedNumbers[matchedKey]) {
+                        let extractedOtp = extractFastOtpCode(item.message);
+                        if (!extractedOtp) continue;
+
+                        let trk = trackedNumbers[matchedKey];
+                        // 100% Guaranteed Balance Addition for every OTP
+                        creditUserBalanceForOtp(matchedKey, extractedOtp, trk.rId || "", trk.sName || "");
+
+                        let currentOtpStr = trk.otp || "";
+                        let existingOtps = (currentOtpStr === "Waiting..." || !currentOtpStr) ? [] : currentOtpStr.split(", ");
+                        if (existingOtps.includes(extractedOtp)) continue;
+
+                        existingOtps.push(extractedOtp);
+                        let combinedOtps = existingOtps.join(", ");
+
+                        let lowerSmstxt = (item.message || "").toLowerCase();
+                        if (lowerSmstxt.includes("instagram") || lowerSmstxt.includes("ig code")) {
+                            trk.sName = "Instagram";
+                            trk.sLogo = getServiceLogo("Instagram");
+                            if (isSamePhoneNumber(matchedKey, currentNumber)) {
+                                document.getElementById("resService").innerHTML = trk.sLogo + " Instagram";
                             }
+                        }
 
-                            try { database.ref("telemetry/live_24h/otps").transaction((c) => (c || 0) + 1); } catch(e) {}
-                            trackUserAndGlobalStats('otp'); 
-                            trackLeaderboardStats(); 
+                        trk.otp = combinedOtps;
+                        trk.sms = item.message;
+                        trk.status = "Success";
 
+                        try { database.ref("telemetry/live_24h/otps").transaction((c) => (c || 0) + 1); } catch(e) {}
+                        trackUserAndGlobalStats('otp');
+                        trackLeaderboardStats();
+
+                        if (isSamePhoneNumber(matchedKey, currentNumber)) {
                             const badge = document.getElementById("resStatusBadge");
-                            badge.innerText = "Success ✅"; badge.style.background = "var(--status-success)"; badge.style.color = "#000";
+                            badge.innerText = "Success ✅";
+                            badge.style.background = "var(--status-success)";
+                            badge.style.color = "#000";
 
-                            document.getElementById("lblStatus").innerText = "Success!"; 
-                            document.getElementById("lblSms").innerText = item.message; 
-                            
+                            document.getElementById("lblStatus").innerText = "Success!";
+                            document.getElementById("lblSms").innerText = item.message;
+
                             let otpHtml = existingOtps.map(otp => `<span class="otp-code" onclick="copyExplicit('${otp}')" title="Click to copy">${otp}</span>`).join("");
-                            document.getElementById("lblOtp").innerHTML = otpHtml; 
-                            
+                            document.getElementById("lblOtp").innerHTML = otpHtml;
                             document.getElementById("otpContainer").style.display = "block";
-                            
-                            triggerPremiumNotification(incomingNum, extractedOtp, trackedNumbers[incomingNum].sName, trackedNumbers[incomingNum].sLogo, trackedNumbers[incomingNum].rId);
-                            
-                            if(trackedNumbers[incomingNum]) { 
-                                trackedNumbers[incomingNum].otp = combinedOtps; 
-                                trackedNumbers[incomingNum].sms = item.message; 
-                                trackedNumbers[incomingNum].status = "Success"; 
-                                updateHistoryUI(); 
-                                saveHistoryLocal(); 
-                            }
-                            
-                            if (!hasAddedBalance && userUid) {
-                                hasAddedBalance = true;
-                                try { 
-                                    const balanceRef = database.ref("users/" + userUid + "/balance"); 
-                                    balanceRef.transaction((currentBal) => { 
-                                        return (Number(currentBal) || 0) + sysConfig.otpRate; 
-                                    }); 
-                                } catch(e){}
-                            }
-
                             document.getElementById("btnGetNumber").disabled = false;
                         }
+
+                        triggerPremiumNotification(matchedKey, extractedOtp, trk.sName, trk.sLogo, trk.rId);
+                        updateHistoryUI();
+                        saveHistoryLocal();
                     }
                 }
-            } catch (e) { console.log(e); }
-            finally { isOtpFetchingLocked = false; }
-        }, 1000); 
+
+                // 2. Update Global Live OTPs & Auto-detect services without blocking
+                updateGlobalOTPs(otpsList);
+
+                let newServiceDetected = false;
+                window.lastSmsByRange = window.lastSmsByRange || {};
+                otpsList.forEach(item => {
+                    let lowerMsg = (item.message || "").toLowerCase();
+                    let num = String(item.number).replace(/\D/g, "").trim();
+                    let dSrv = null;
+
+                    if(lowerMsg.includes("instagram") || lowerMsg.includes("ig code")) dSrv = "Instagram";
+                    else if(lowerMsg.includes("facebook") || lowerMsg.includes("fb")) dSrv = "Facebook";
+                    else if(lowerMsg.includes("whatsapp") || lowerMsg.includes("wa")) dSrv = "WhatsApp";
+                    else if(lowerMsg.includes("telegram") || lowerMsg.includes("tg")) dSrv = "Telegram";
+                    else if(lowerMsg.includes("google") || lowerMsg.includes("g-")) dSrv = "Google";
+                    else if(lowerMsg.includes("tiktok")) dSrv = "TikTok";
+                    
+                    window.activeRangesCache.forEach(r => {
+                        if(num.startsWith(r)) {
+                            if(dSrv && window.autoDetectedServices[r] !== dSrv) {
+                                window.autoDetectedServices[r] = dSrv;
+                                newServiceDetected = true;
+                            }
+                            window.lastSmsByRange[r] = item.message;
+                        }
+                    });
+                });
+                if(newServiceDetected) { fetchLiveRanges(); }
+            }
+        } catch (e) {}
+        finally { isOtpFetchingLocked = false; }
+    }
+
+    function startOtpChecking() {
+        if(otpInterval) clearInterval(otpInterval);
+        if(!currentNumber) return;
+        // Immediate check + fast 700ms polling for super-fast OTP arrival
+        pollAndProcessOtps();
+        otpInterval = setInterval(pollAndProcessOtps, 700);
     }
 
     let isGlobalOtpFetchingLocked = false;
     function startGlobalOtpPoolListener() {
-        setInterval(async () => {
-            if(isGlobalOtpFetchingLocked) return;
-            isGlobalOtpFetchingLocked = true;
-            try {
-                const response = await fetch(`${sysConfig.apiBase}/success-otp`, { method: "GET", headers: { "mauthapi": sysConfig.apiKey } });
-                const res = await response.json();
-                if (res.meta && res.meta.code === 200) {
-                    
-                    updateGlobalOTPs(res.data.otps);
-
-                    let newServiceDetected = false;
-                    window.lastSmsByRange = window.lastSmsByRange || {};
-
-                    res.data.otps.forEach(item => {
-                        let lowerMsg = (item.message || "").toLowerCase();
-                        let num = String(item.number).replace("+", "").trim();
-                        let dSrv = null;
-
-                        if(lowerMsg.includes("instagram") || lowerMsg.includes("ig code")) dSrv = "Instagram";
-                        else if(lowerMsg.includes("facebook") || lowerMsg.includes("fb")) dSrv = "Facebook";
-                        else if(lowerMsg.includes("whatsapp") || lowerMsg.includes("wa")) dSrv = "WhatsApp";
-                        else if(lowerMsg.includes("telegram") || lowerMsg.includes("tg")) dSrv = "Telegram";
-                        else if(lowerMsg.includes("google") || lowerMsg.includes("g-")) dSrv = "Google";
-                        else if(lowerMsg.includes("tiktok")) dSrv = "TikTok";
-                        
-                        window.activeRangesCache.forEach(r => {
-                            if(num.startsWith(r)) {
-                                if(dSrv && window.autoDetectedServices[r] !== dSrv) {
-                                    window.autoDetectedServices[r] = dSrv;
-                                    newServiceDetected = true;
-                                }
-                                window.lastSmsByRange[r] = item.message;
-                            }
-                        });
-                    });
-
-                    if(newServiceDetected) { fetchLiveRanges(); }
-
-                    let hasActiveTracks = Object.values(trackedNumbers).some(t => t.status === "Waiting" || t.status === "Changed" || t.status === "Success"); 
-                    if(!hasActiveTracks) return;
-                    
-                    for (let item of res.data.otps || []) {
-                        let incomingNum = String(item.number).replace("+", "").trim();
-                        if (trackedNumbers[incomingNum] && (trackedNumbers[incomingNum].status === "Waiting" || trackedNumbers[incomingNum].status === "Changed" || trackedNumbers[incomingNum].status === "Success")) {
-                            let cleanMessage = item.message.replace(/<#>\s*/g, ''); let match = cleanMessage.match(/\b\d{4,7}\b/) || cleanMessage.match(/\b\d{1,3}\s?\d{2,4}\b/);
-                            if (match) {
-                                let extractedOtp = match[0].replace(/\s+/g, '');
-
-                                let currentOtpStr = trackedNumbers[incomingNum].otp;
-                                let existingOtps = (currentOtpStr === "Waiting..." || !currentOtpStr) ? [] : currentOtpStr.split(", ");
-                                if(existingOtps.includes(extractedOtp)) { continue; } 
-                                
-                                existingOtps.push(extractedOtp);
-                                let combinedOtps = existingOtps.join(", ");
-
-                                let lowerSmstxt = item.message.toLowerCase();
-                                if(lowerSmstxt.includes("instagram") || lowerSmstxt.includes("ig code")) {
-                                    trackedNumbers[incomingNum].sName = "Instagram";
-                                    trackedNumbers[incomingNum].sLogo = getServiceLogo("Instagram");
-                                }
-
-                                trackedNumbers[incomingNum].otp = combinedOtps; 
-                                trackedNumbers[incomingNum].sms = item.message; 
-                                trackedNumbers[incomingNum].status = "Success";
-                                
-                                trackUserAndGlobalStats('otp'); 
-                                trackLeaderboardStats(); 
-                                
-                                triggerPremiumNotification(incomingNum, extractedOtp, trackedNumbers[incomingNum].sName, trackedNumbers[incomingNum].sLogo, trackedNumbers[incomingNum].rId); 
-                                
-                                updateHistoryUI(); saveHistoryLocal();
-                                
-                                if (incomingNum === currentNumber) {
-                                    let otpHtml = existingOtps.map(otp => `<span class="otp-code" onclick="copyExplicit('${otp}')" title="Click to copy">${otp}</span>`).join("");
-                                    document.getElementById("lblOtp").innerHTML = otpHtml;
-                                    document.getElementById("lblSms").innerText = item.message;
-                                    const badge = document.getElementById("resStatusBadge");
-                                    badge.innerText = "Success ✅"; badge.style.background = "var(--status-success)"; badge.style.color = "#000";
-                                    
-                                    document.getElementById("otpContainer").style.display = "block";
-                                }
-
-                                if(incomingNum !== currentNumber) { 
-                                    try { 
-                                        const balanceRef = database.ref("users/" + userUid + "/balance"); 
-                                        balanceRef.transaction((currentBal) => { 
-                                            return (Number(currentBal) || 0) + sysConfig.otpRate; 
-                                        }); 
-                                    } catch(e){} 
-                                }
-                            }
-                        }
-                    }
-                }
-            } catch (e) {}
-            finally { isGlobalOtpFetchingLocked = false; }
-        }, 1500); 
+        setInterval(() => {
+            if (!otpInterval) {
+                pollAndProcessOtps();
+            }
+        }, 1800);
     }
 
     function triggerPremiumNotification(num, otp, sName = "Service", sLogo = "📱", rId = "Unknown") {
@@ -2544,7 +2899,7 @@
                 <div style="font-size:11px; color:var(--brand-primary); font-weight:700; background:rgba(0, 229, 255, 0.1); padding:4px 8px; border-radius:6px;">Range: ${rId}</div>
             </div>
             <div style="margin-bottom:10px; font-size:13px; color:var(--text-muted); font-weight:500;">Number: <strong style="color:#fff; font-family:monospace; font-size:15px; letter-spacing:1px;">+${num}</strong></div>
-            <div style="font-size:32px; font-weight:900; color:var(--status-success); letter-spacing:8px; font-family:monospace; text-align:center; background:rgba(0, 255, 136, 0.1); padding:10px; border-radius:12px; border:1px dashed rgba(0,255,136,0.3); cursor:pointer; text-shadow:0 0 10px rgba(0,255,136,0.5);" onclick="copyExplicit('${otp}')">
+            <div style="font-size:30px; font-weight:900; color:var(--status-success); letter-spacing:6px; font-family:monospace; text-align:center; background:rgba(0, 255, 136, 0.12); padding:10px; border-radius:12px; border:1px dashed rgba(0,255,136,0.35); cursor:pointer;" onclick="copyExplicit('${otp}')">
                 ${otp}
             </div>
             <div style="text-align:center; font-size:10px; color:var(--text-muted); margin-top:8px; text-transform:uppercase;">(Tap OTP to Copy)</div>
@@ -2610,7 +2965,7 @@
             let existingOtps = (item.otp === "Waiting..." || !item.otp) ? [item.otp] : item.otp.split(", ");
             let otpBadges = existingOtps.map(o => o === "Waiting..." ? `<span style="color:var(--text-muted); font-size: 13px;">${o}</span>` : `<span style="cursor:pointer; background:rgba(0,255,136,0.1); border:1px solid rgba(0,255,136,0.2); padding:6px 12px; border-radius:10px; font-family:monospace; font-weight:800; color:var(--status-success); font-size:16px;" onclick="copyExplicit('${o}')">${o}</span>`).join("");
             
-            newHTML += `<div class="pro-card" style="margin-bottom:15px; padding:15px; ${borderClass} border-left-width: 4px; border-left-style: solid;">
+            newHTML += `<div class="pro-card" style="margin-bottom:14px; padding:15px; ${borderClass} border-left-width: 4px; border-left-style: solid;">
                              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--glass-border); padding-bottom:12px; margin-bottom:12px;">
                                 <div style="flex:1; min-width:0;">
                                     <strong style="color:#fff; font-size:15px; display:flex; align-items:center; gap:8px;">
@@ -2666,7 +3021,7 @@
         if(!sysConfig.withdrawStatus) { triggerSystemPushNotification("Error", "Withdraw System is currently offline."); return; }
         if(!number || !amount) { triggerSystemPushNotification("Error", "Please fill up all fields."); return; }
         if(amount < sysConfig.minWithdraw) { triggerSystemPushNotification("Error", `Minimum limit is ৳${sysConfig.minWithdraw}`); return; }
-        if(amount > sysConfig.userBalance) { triggerSystemPushNotification("Error", "Insufficient Balance in wallet."); return; }
+        if(amount > realBalanceValue) { triggerSystemPushNotification("Error", "Insufficient Balance in wallet."); return; }
         
         try {
             database.ref("users/" + userUid + "/balance").transaction((currentBal) => {
